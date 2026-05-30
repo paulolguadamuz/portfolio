@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
+import { useLang } from '../i18n/LanguageContext';
 
 export default function Hero() {
+  const { t } = useLang();
   const sectionRef = useRef(null);
   const nameRef = useRef(null);
   const subtitleRef = useRef(null);
@@ -9,21 +11,38 @@ export default function Hero() {
   const photoRef = useRef(null);
 
   useEffect(() => {
+    let glitchInterval;
+    const nameEl = nameRef.current;
+
+    const triggerGlitch = () => {
+      if (!nameEl) return;
+      const glitchTl = gsap.timeline({
+        onStart: () => nameEl.classList.add('glitching'),
+        onComplete: () => {
+          nameEl.classList.remove('glitching');
+          gsap.set(nameEl, { x: 0, skewX: 0 });
+        }
+      });
+
+      glitchTl.to(nameEl, { x: -3, skewX: 10, duration: 0.05 })
+        .to(nameEl, { x: 3, skewX: -8, duration: 0.05 })
+        .to(nameEl, { x: 0, skewX: 0, duration: 0.05 });
+    };
+
     const ctx = gsap.context(() => {
       // Split name into words, then letters per word (prevents mid-word line breaks)
-      const nameEl = nameRef.current;
       const text = nameEl.textContent;
       const words = text.split(' ');
 
-      // High-end 3D flip animation setup for letters
+      // High-end Spotlight Reveal animation setup for letters
       nameEl.innerHTML = words
         .map(
           (word) =>
-            `<span style="display:inline-block; white-space:nowrap; perspective: 800px;">${word
+            `<span style="display:inline-block; white-space:nowrap;">${word
               .split('')
               .map(
                 (char) =>
-                  `<span class="letter-span" style="display:inline-block; opacity:0; transform: translateY(60px) rotateX(-90deg); transform-origin: 50% 50% -20px;">${char}</span>`
+                  `<span class="letter-span" style="display:inline-block; will-change: transform, opacity, filter;">${char}</span>`
               )
               .join('')}</span>`
         )
@@ -33,12 +52,13 @@ export default function Hero() {
 
       const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
 
-      tl.to(letters, {
-        opacity: 1,
-        y: 0,
-        rotateX: 0,
-        duration: 1.2,
-        stagger: 0.03,
+      tl.from(letters, {
+        opacity: 0.1,
+        scale: 0.8,
+        filter: 'blur(4px)',
+        stagger: { each: 0.06, from: 'center' },
+        duration: 0.6,
+        ease: 'power2.out',
       })
         .from(
           subtitleRef.current,
@@ -73,9 +93,28 @@ export default function Hero() {
           },
           '-=1.5'
         );
+
+      // Trigger first glitch slightly after entry animation finishes
+      tl.add(() => {
+        triggerGlitch();
+      }, '+=0.2');
     }, sectionRef);
 
-    return () => ctx.revert();
+    // Set up periodic glitch trigger (every 4.5 seconds)
+    glitchInterval = setInterval(triggerGlitch, 4500);
+
+    // Trigger glitch on hover
+    if (nameEl) {
+      nameEl.addEventListener('mouseenter', triggerGlitch);
+    }
+
+    return () => {
+      ctx.revert();
+      clearInterval(glitchInterval);
+      if (nameEl) {
+        nameEl.removeEventListener('mouseenter', triggerGlitch);
+      }
+    };
   }, []);
 
   return (
@@ -117,26 +156,24 @@ export default function Hero() {
         <div className="flex flex-col gap-6 max-w-4xl">
           <h1
             ref={nameRef}
-            className="font-display font-extrabold text-5xl sm:text-6xl md:text-7xl lg:text-[6rem] tracking-wide leading-[1.1] text-light drop-shadow-2xl"
+            className="font-signature font-normal text-6xl sm:text-7xl md:text-8xl lg:text-[8rem] tracking-wide leading-[1.1] text-light drop-shadow-2xl glitch-text"
+            data-text="Paulo Jimenez"
           >
-            PAULO JIMENEZ
+            Paulo Jimenez
           </h1>
 
           <p
             ref={subtitleRef}
             className="font-display font-semibold text-xl sm:text-2xl lg:text-3xl text-light/90 tracking-wide drop-shadow-lg"
           >
-            Ingeniero TI , Desarrollador Web, UI/UX Designer.
+            {t('hero.subtitle')}
           </p>
 
           <p
             ref={bioRef}
             className="font-body text-base sm:text-lg lg:text-xl text-light/80 max-w-2xl leading-relaxed drop-shadow-md"
           >
-            Soy un ingeniero en tecnologías de información con experiencia en
-            desarrollo web, diseño de interfaces, ciberseguridad y soluciones tecnológicas.
-            Me especializo en crear soluciones eficientes y escalables para
-            empresas y organizaciones.
+            {t('hero.bio')}
           </p>
 
           <div className="flex gap-4 mt-6">
@@ -144,13 +181,13 @@ export default function Hero() {
               href="#projects"
               className="font-body text-sm uppercase tracking-widest px-8 py-4 border border-light/30 rounded-full text-light hover:bg-light hover:text-dark transition-all duration-300 backdrop-blur-md bg-black/20"
             >
-              Ver proyectos
+              {t('hero.cta_projects')}
             </a>
             <a
               href="#contact"
               className="font-body text-sm uppercase tracking-widest px-8 py-4 bg-light text-dark rounded-full hover:bg-light/90 transition-all duration-300 shadow-xl"
             >
-              Contacto
+              {t('hero.cta_contact')}
             </a>
           </div>
         </div>

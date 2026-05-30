@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
 
+import { LanguageProvider } from './i18n/LanguageContext';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Projects from './components/Projects';
@@ -43,7 +44,7 @@ function App() {
   }, []);
 
   return (
-    <>
+    <LanguageProvider>
       <Navbar lenisRef={lenisRef} />
       <main>
         <Hero />
@@ -52,8 +53,9 @@ function App() {
       </main>
       <Footer />
       <FloatingWhatsApp />
-    </>
+    </LanguageProvider>
   );
 }
 
 export default App;
+

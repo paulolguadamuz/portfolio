@@ -4,8 +4,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { FiGithub, FiX } from 'react-icons/fi';
 import { projects } from '../data/projects';
 import ProjectCard from './ProjectCard';
+import { useLang } from '../i18n/LanguageContext';
 
 export default function Projects() {
+  const { t } = useLang();
   const wrapperRef = useRef(null);
   const ctaRef = useRef(null);
   const [activeImage, setActiveImage] = useState(null);
@@ -125,7 +127,7 @@ export default function Projects() {
       {/* Section heading */}
       <div className="max-w-7xl mx-auto px-6 lg:px-8 mb-20">
         <h2 className="font-display font-bold text-4xl sm:text-5xl md:text-6xl text-light tracking-tight">
-          Proyectos
+          {t('projects.title')}
         </h2>
         <div className="mt-4 w-24 h-1 bg-light/20 rounded-full" />
       </div>
@@ -148,7 +150,7 @@ export default function Projects() {
           className="group flex items-center gap-3 font-body text-sm uppercase tracking-widest px-8 py-4 border border-light/20 rounded-full text-light hover:bg-light hover:text-dark transition-all duration-300"
         >
           <FiGithub className="w-5 h-5 group-hover:scale-110 transition-transform" />
-          Ver más proyectos en GitHub
+          {t('projects.cta_github')}
         </a>
       </div>
 
@@ -162,7 +164,7 @@ export default function Projects() {
         <button 
           className="absolute top-8 right-8 text-white/50 hover:text-white hover:scale-110 transition-all z-10"
           onClick={() => setActiveImage(null)}
-          aria-label="Cerrar"
+          aria-label={t('projects.close')}
         >
           <FiX className="w-10 h-10" />
         </button>
@@ -170,7 +172,7 @@ export default function Projects() {
         {activeImage && (
           <img
             src={activeImage}
-            alt="Vista de proyecto"
+            alt={t('projects.view')}
             className={`max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
               activeImage ? 'scale-100' : 'scale-95'
             }`}

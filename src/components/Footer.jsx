@@ -6,6 +6,7 @@ import {
   FiPhone,
 } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
+import { useLang } from '../i18n/LanguageContext';
 
 const SOCIALS = [
   {
@@ -31,6 +32,8 @@ const SOCIALS = [
 ];
 
 export default function Footer() {
+  const { t } = useLang();
+
   return (
     <footer className="relative border-t border-light/10 py-16">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -48,14 +51,14 @@ export default function Footer() {
               rel="noopener noreferrer"
               className="inline-block mt-2 font-body text-sm uppercase tracking-widest px-6 py-3 border border-light/20 rounded-full text-light hover:bg-light hover:text-dark transition-all duration-300 text-center w-fit"
             >
-              Ver más proyectos
+              {t('footer.cta')}
             </a>
           </div>
 
           {/* Contact info */}
           <div className="flex flex-col gap-3">
             <h4 className="font-display font-semibold text-sm uppercase tracking-widest text-light/60 mb-2">
-              Contacto
+              {t('footer.contact_title')}
             </h4>
             <a
               href="mailto:paujigua@gmail.com"
@@ -76,7 +79,7 @@ export default function Footer() {
           {/* Social icons */}
           <div className="flex flex-col gap-3">
             <h4 className="font-display font-semibold text-sm uppercase tracking-widest text-light/60 mb-2">
-              Redes
+              {t('footer.socials_title')}
             </h4>
             <div className="flex items-center gap-4">
               {SOCIALS.map(({ icon: Icon, href, label }) => (
@@ -98,10 +101,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="mt-12 pt-8 border-t border-light/5 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="font-body text-xs text-light/30">
-            © {new Date().getFullYear()} Paulo Jimenez Guadamuz. Todos los derechos
-            reservados.
-          </p>
-          <p className="font-body text-xs text-light/20">
+            © {new Date().getFullYear()} Paulo Jimenez Guadamuz. {t('footer.rights')}
           </p>
         </div>
       </div>

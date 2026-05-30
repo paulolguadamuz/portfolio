@@ -1,8 +1,10 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useLang } from '../i18n/LanguageContext';
 
 export default function ProjectCard({ project, index, onImageClick }) {
+  const { t } = useLang();
   const cardRef = useRef(null);
   const imageRef = useRef(null);
   const galleryRef = useRef(null);
@@ -11,6 +13,9 @@ export default function ProjectCard({ project, index, onImageClick }) {
   const tagsRef = useRef(null);
 
   const isEven = index % 2 === 0;
+
+  // Get translated description if available
+  const description = t(`projects.descriptions.${project.id}`) || project.description;
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -134,6 +139,13 @@ export default function ProjectCard({ project, index, onImageClick }) {
     return () => ctx.revert();
   }, [isEven]);
 
+  // Translate tag if a translation exists, otherwise keep the original
+  const translateTag = (tag) => {
+    const translated = t(`projects.tags.${tag}`);
+    // If translation returns the key path, it means no translation exists — keep original
+    return translated === `projects.tags.${tag}` ? tag : translated;
+  };
+
   return (
     <div
       ref={cardRef}
@@ -176,7 +188,7 @@ export default function ProjectCard({ project, index, onImageClick }) {
                 >
                   <img
                     src={img}
-                    alt={`${project.title} - vista ${i + 1}`}
+                    alt={`${project.title} - ${t('projects.view')} ${i + 1}`}
                     className="w-full h-auto aspect-video object-cover cursor-pointer hover:scale-105 transition-transform duration-700"
                     loading="lazy"
                     onClick={() => onImageClick(img)}
@@ -210,7 +222,7 @@ export default function ProjectCard({ project, index, onImageClick }) {
             className="font-body text-base sm:text-lg leading-relaxed max-w-lg"
             style={{ color: `${project.palette.surface}CC` }}
           >
-            {project.description}
+            {description}
           </p>
 
           {/* Tags */}
@@ -230,7 +242,7 @@ export default function ProjectCard({ project, index, onImageClick }) {
                     boxShadow: `0 0 8px ${project.palette.accent}`
                   }} 
                 />
-                {tag}
+                {translateTag(tag)}
               </span>
             ))}
           </div>
