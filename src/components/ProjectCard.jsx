@@ -214,15 +214,13 @@ export default function ProjectCard({ project, index, onImageClick }) {
           </p>
 
           {/* Tags */}
-          <div ref={tagsRef} className="flex flex-wrap gap-3 mt-4">
+          <div ref={tagsRef} className="flex flex-wrap gap-x-5 gap-y-2 mt-4">
             {project.tags.map((tag) => (
               <span
                 key={tag}
-                className="flex items-center gap-2 font-body text-xs uppercase tracking-widest px-3 py-1.5 rounded border backdrop-blur-md"
+                className="flex items-center gap-2 font-body text-xs uppercase tracking-widest font-medium"
                 style={{
-                  borderColor: `${project.palette.accent}30`,
                   color: project.palette.surface,
-                  backgroundColor: `${project.palette.accent}0A`,
                 }}
               >
                 <span 

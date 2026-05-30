@@ -131,14 +131,12 @@ export default function Hero() {
 
           <p
             ref={bioRef}
-            className="font-body text-base sm:text-lg lg:text-xl text-light/70 max-w-2xl leading-relaxed drop-shadow-md backdrop-blur-[2px] bg-black/10 p-5 rounded-2xl border border-white/5"
+            className="font-body text-base sm:text-lg lg:text-xl text-light/80 max-w-2xl leading-relaxed drop-shadow-md"
           >
             Soy un ingeniero en tecnologías de información con experiencia en
             desarrollo web, diseño de interfaces, ciberseguridad y soluciones tecnológicas.
             Me especializo en crear soluciones eficientes y escalables para
             empresas y organizaciones.
-
-
           </p>
 
           <div className="flex gap-4 mt-6">
