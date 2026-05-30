@@ -65,7 +65,7 @@ export default function Navbar({ lenisRef }) {
           onClick={(e) => handleNavClick(e, '#hero')}
           className="font-signature font-normal text-3xl sm:text-4xl tracking-wider text-light hover:opacity-80 transition-opacity"
         >
-          Paulo Jimenez Guadamuz
+          Paulo Jimenez
         </a>
 
         {/* Desktop Nav */}
