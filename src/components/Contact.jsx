@@ -62,7 +62,7 @@ export default function Contact() {
           ref={subtextRef}
           className="font-body text-lg text-light/50 mt-6 max-w-xl mx-auto leading-relaxed"
         >
-          ¿Tienes un proyecto en mente? Me encantaría escuchar su idea y
+          ¿Tiene algún proyecto en mente? Me encantaría escuchar su idea y
           explorar cómo puedo ayudarle a hacerla realidad.
         </p>
 

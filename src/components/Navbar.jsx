@@ -54,8 +54,8 @@ export default function Navbar({ lenisRef }) {
     <nav
       id="navbar"
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
-          ? 'glass py-3'
-          : 'bg-transparent py-5'
+        ? 'glass py-3'
+        : 'bg-transparent py-5'
         }`}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between">
@@ -63,7 +63,7 @@ export default function Navbar({ lenisRef }) {
         <a
           href="#hero"
           onClick={(e) => handleNavClick(e, '#hero')}
-          className="font-display font-bold text-xl tracking-tight text-light hover:opacity-80 transition-opacity"
+          className="font-signature font-normal text-3xl sm:text-4xl tracking-wider text-light hover:opacity-80 transition-opacity"
         >
           Paulo Jimenez Guadamuz
         </a>
@@ -76,8 +76,8 @@ export default function Navbar({ lenisRef }) {
                 href={item.href}
                 onClick={(e) => handleNavClick(e, item.href)}
                 className={`nav-link font-body text-sm tracking-wide uppercase transition-opacity ${activeSection === item.href.slice(1)
-                    ? 'active text-light opacity-100'
-                    : 'text-light/60 hover:text-light/90'
+                  ? 'active text-light opacity-100'
+                  : 'text-light/60 hover:text-light/90'
                   }`}
               >
                 {item.label}
@@ -119,8 +119,8 @@ export default function Navbar({ lenisRef }) {
                 href={item.href}
                 onClick={(e) => handleNavClick(e, item.href)}
                 className={`nav-link font-body text-sm tracking-wide uppercase block py-2 ${activeSection === item.href.slice(1)
-                    ? 'active text-light'
-                    : 'text-light/60'
+                  ? 'active text-light'
+                  : 'text-light/60'
                   }`}
               >
                 {item.label}
