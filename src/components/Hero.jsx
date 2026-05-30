@@ -119,7 +119,7 @@ export default function Hero() {
             ref={nameRef}
             className="font-display font-extrabold text-5xl sm:text-6xl md:text-7xl lg:text-[6rem] tracking-wide leading-[1.1] text-light drop-shadow-2xl"
           >
-            PAULO JIMENEZ GUADAMUZ
+            PAULO JIMENEZ
           </h1>
 
           <p
