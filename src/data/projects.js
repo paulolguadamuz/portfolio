@@ -1,0 +1,58 @@
+export const projects = [
+  {
+    id: 1,
+    title: "Novasite",
+    description:
+      "Sitio web corporativo para un equipo de desarrollo de software, diseñado para presentar proyectos, mostrar al equipo y captar clientes. Construido con React, JavaScript y Lenis para una experiencia de scroll fluida y profesional.",
+    image: "/projects/NovasiteHomeScreen.png",
+    gallery: [
+      "/projects/NovasiteProjects.png",
+      "/projects/NovasiteMembers.png",
+      "/projects/NovasiteContact.png",
+    ],
+    tags: ["React", "JavaScript", "Lenis"],
+    palette: {
+      from: "#09090A",
+      to: "#015393",
+      accent: "#53A3E2",
+      surface: "#FFFEFE",
+    },
+  },
+  {
+    id: 2,
+    title: "Bougainvillea",
+    description:
+      "E-commerce de café de especialidad con catálogo interactivo, carrito moderno y pasarelas de pago integradas (PayPal y SINPE). Incluye secciones de about, contacto y una experiencia de compra enfocada en transmitir la identidad artesanal de la marca.",
+    image: "/projects/BougainVilleaHomescreen.png",
+    gallery: [
+      "/projects/BougainVilleaCatalog.png",
+      "/projects/BougainVilleaContactBurgerMenu.png",
+    ],
+    tags: ["E-commerce", "PayPal", "SINPE", "Catálogo"],
+    palette: {
+      from: "#FAFEF8",
+      to: "#78464C",
+      accent: "#C12880",
+      surface: "#FFFFFF",
+    },
+  },
+  {
+    id: 3,
+    title: "MantenTools",
+    description:
+      "Plataforma de gestión de mantenimiento industrial para pequeñas fábricas. Permite a los operarios reportar fallas escaneando un QR en cada máquina y genera recordatorios automáticos de revisiones preventivas, eliminando el caos de WhatsApp y minimizando paros en la línea de producción.",
+    image: "/projects/mantentoolsDashBoard.png",
+    gallery: [
+      "/projects/mantentoolsGraphs.png",
+      "/projects/mantentoolsUsers.png",
+      "/projects/MantentoolsCheck.png",
+    ],
+    tags: ["QR", "Mantenimiento", "Industrial", "Automatización"],
+    palette: {
+      from: "#162033",
+      to: "#0D172A",
+      accent: "#A8AFBA",
+      surface: "#F0F5F9",
+    },
+  },
+];
