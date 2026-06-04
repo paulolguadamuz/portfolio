@@ -31,6 +31,8 @@ const translations = {
         'Mantenimiento': 'Mantenimiento',
         'Automatización': 'Automatización',
       },
+      visit_site: 'Visitar sitio',
+      private_saas: 'SaaS Privado — Acceso Restringido',
     },
 
     // Contact
@@ -98,6 +100,8 @@ const translations = {
         'Mantenimiento': 'Maintenance',
         'Automatización': 'Automation',
       },
+      visit_site: 'Visit site',
+      private_saas: 'Private SaaS — Restricted Access',
     },
 
     // Contact

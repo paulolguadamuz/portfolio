@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { FiExternalLink, FiLock } from 'react-icons/fi';
 import { useLang } from '../i18n/LanguageContext';
 
 export default function ProjectCard({ project, index, onImageClick }) {
@@ -11,6 +12,7 @@ export default function ProjectCard({ project, index, onImageClick }) {
   const titleRef = useRef(null);
   const descRef = useRef(null);
   const tagsRef = useRef(null);
+  const actionRef = useRef(null);
 
   const isEven = index % 2 === 0;
 
@@ -134,6 +136,28 @@ export default function ProjectCard({ project, index, onImageClick }) {
           }
         );
       }
+
+      // Action button reveal
+      if (actionRef.current) {
+        gsap.fromTo(
+          actionRef.current,
+          { opacity: 0, y: 24, scale: 0.92, filter: 'blur(6px)' },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            filter: 'blur(0px)',
+            duration: 1,
+            delay: 0.15,
+            ease: 'expo.out',
+            scrollTrigger: {
+              trigger: cardRef.current,
+              start: 'top 60%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
     }, cardRef);
 
     return () => ctx.revert();
@@ -245,6 +269,39 @@ export default function ProjectCard({ project, index, onImageClick }) {
                 {translateTag(tag)}
               </span>
             ))}
+          </div>
+
+          {/* Project action — visit site or private badge */}
+          <div ref={actionRef} className="mt-6">
+            {project.url ? (
+              <a
+                href={project.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="project-visit-btn"
+                style={{
+                  '--accent': project.palette.accent,
+                  '--surface': project.palette.surface,
+                }}
+              >
+                <span className="project-visit-btn__glow" />
+                <span className="project-visit-btn__content">
+                  <FiExternalLink className="w-4 h-4" />
+                  {t('projects.visit_site')}
+                </span>
+              </a>
+            ) : project.isPrivate ? (
+              <span
+                className="project-private-badge"
+                style={{
+                  '--accent': project.palette.accent,
+                  '--surface': project.palette.surface,
+                }}
+              >
+                <FiLock className="w-3.5 h-3.5" />
+                {t('projects.private_saas')}
+              </span>
+            ) : null}
           </div>
         </div>
       </div>

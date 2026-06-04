@@ -11,6 +11,7 @@ export const projects = [
       "/projects/NovasiteContact.png",
     ],
     tags: ["React", "JavaScript", "Lenis"],
+    url: "https://www.novacr.site",
     palette: {
       from: "#09090A",
       to: "#015393",
@@ -29,6 +30,7 @@ export const projects = [
       "/projects/BougainVilleaContactBurgerMenu.png",
     ],
     tags: ["E-commerce", "PayPal", "SINPE", "Catálogo"],
+    url: "https://bougan-villea.vercel.app/",
     palette: {
       from: "#FAFEF8",
       to: "#78464C",
@@ -48,6 +50,7 @@ export const projects = [
       "/projects/MantentoolsCheck.png",
     ],
     tags: ["QR", "Mantenimiento", "Industrial", "Automatización"],
+    isPrivate: true,
     palette: {
       from: "#162033",
       to: "#0D172A",
