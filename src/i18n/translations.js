@@ -62,6 +62,37 @@ const translations = {
       rights: 'Todos los derechos reservados.',
     },
 
+    // Skills
+    skills: {
+      title: 'Tecnologías',
+      items: {
+        react: {
+          name: 'React',
+          desc: 'Desarrollo de interfaces dinámicas con componentes reutilizables, hooks y gestión de estado para aplicaciones web de alto rendimiento.',
+        },
+        javascript: {
+          name: 'JavaScript',
+          desc: 'Dominio completo del lenguaje — ES6+, asincronía, manipulación del DOM y desarrollo tanto en frontend como en backend con Node.js.',
+        },
+        typescript: {
+          name: 'TypeScript',
+          desc: 'Tipado estático para proyectos escalables, interfaces robustas y mejor experiencia de desarrollo en equipos.',
+        },
+        tailwind: {
+          name: 'Tailwind CSS',
+          desc: 'Maquetación ágil con utility-first, diseño responsivo y sistemas de diseño consistentes sin CSS redundante.',
+        },
+        sql: {
+          name: 'SQL',
+          desc: 'Modelado de bases de datos relacionales, consultas complejas, optimización de rendimiento y migraciones con PostgreSQL y MySQL.',
+        },
+        python: {
+          name: 'Python',
+          desc: 'Automatización de procesos, scripting, análisis de datos y desarrollo de APIs con frameworks como Flask y FastAPI.',
+        },
+      },
+    },
+
     // WhatsApp
     whatsapp: {
       label: 'Contactar por WhatsApp',
@@ -129,6 +160,37 @@ const translations = {
       contact_title: 'Contact',
       socials_title: 'Social',
       rights: 'All rights reserved.',
+    },
+
+    // Skills
+    skills: {
+      title: 'Skills',
+      items: {
+        react: {
+          name: 'React',
+          desc: 'Building dynamic interfaces with reusable components, hooks and state management for high-performance web applications.',
+        },
+        javascript: {
+          name: 'JavaScript',
+          desc: 'Full command of the language — ES6+, async patterns, DOM manipulation and development on both frontend and backend with Node.js.',
+        },
+        typescript: {
+          name: 'TypeScript',
+          desc: 'Static typing for scalable projects, robust interfaces and improved developer experience in team environments.',
+        },
+        tailwind: {
+          name: 'Tailwind CSS',
+          desc: 'Rapid utility-first layouts, responsive design and consistent design systems without redundant CSS.',
+        },
+        sql: {
+          name: 'SQL',
+          desc: 'Relational database modeling, complex queries, performance optimization and migrations with PostgreSQL and MySQL.',
+        },
+        python: {
+          name: 'Python',
+          desc: 'Process automation, scripting, data analysis and API development with frameworks like Flask and FastAPI.',
+        },
+      },
     },
 
     // WhatsApp
