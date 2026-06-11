@@ -83,7 +83,9 @@ export default function Contact() {
     };
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+      // In Vercel production, /api/contact is native. Locally, we point to the Express server.
+      const apiUrl = import.meta.env.PROD ? '' : 'http://localhost:3000';
+      
       const response = await fetch(`${apiUrl}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

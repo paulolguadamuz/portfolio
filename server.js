@@ -9,15 +9,15 @@ const app = express();
 
 /* ── CORS — restrict to known origins ── */
 const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:4173',
   process.env.SITE_URL, // e.g. https://paulojimenez.dev
 ].filter(Boolean);
 
 app.use(cors({
   origin: (origin, cb) => {
-    // Allow requests with no origin (curl, Postman in dev)
-    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+    // Allow requests with no origin (e.g. curl), from allowed origins, or from any local development port
+    if (!origin || allowedOrigins.includes(origin) || /^http:\/\/localhost:\d+$/.test(origin)) {
+      return cb(null, true);
+    }
     cb(new Error('CORS: origin not allowed'));
   },
 }));
