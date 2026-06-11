@@ -3,6 +3,19 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useLang } from '../i18n/LanguageContext';
 
+/* ── Sanitization & Validation helpers ── */
+
+// Strip HTML/script tags to prevent XSS injection
+const sanitize = (str) =>
+  str.replace(/<[^>]*>/g, '').replace(/[<>]/g, '').trim();
+
+// Basic email regex — RFC-light
+const isValidEmail = (email) =>
+  /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(email);
+
+// Max character limits
+const LIMITS = { name: 100, email: 254, message: 500 };
+
 export default function Contact() {
   const { t } = useLang();
   const sectionRef = useRef(null);
@@ -11,33 +24,82 @@ export default function Contact() {
   const formRef = useRef(null);
 
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [errors, setErrors] = useState({});
   const [status, setStatus] = useState({ state: 'idle', message: '' });
 
+  /* ── Field-level change with length cap ── */
   const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.id.replace('contact-', '')]: e.target.value }));
+    const field = e.target.id.replace('contact-', '');
+    const raw = e.target.value;
+
+    // Enforce max length
+    if (raw.length > LIMITS[field]) return;
+
+    setFormData((prev) => ({ ...prev, [field]: raw }));
+
+    // Clear field error on edit
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: '' }));
+    }
   };
 
+  /* ── Validate all fields ── */
+  const validate = () => {
+    const errs = {};
+
+    const cleanName = sanitize(formData.name);
+    const cleanEmail = sanitize(formData.email);
+    const cleanMessage = sanitize(formData.message);
+
+    if (!cleanName || cleanName.length < 2) {
+      errs.name = t('contact.error_name');
+    }
+
+    if (!cleanEmail || !isValidEmail(cleanEmail)) {
+      errs.email = t('contact.error_email');
+    }
+
+    if (!cleanMessage || cleanMessage.length < 10) {
+      errs.message = t('contact.error_message');
+    }
+
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
+  /* ── Submit with sanitized payload ── */
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.email || !formData.message) {
-      setStatus({ state: 'error', message: t('contact.error_fields') });
-      return;
-    }
+
+    if (!validate()) return;
 
     setStatus({ state: 'loading', message: t('contact.sending') });
 
+    // Sanitize before sending
+    const payload = {
+      name: sanitize(formData.name),
+      email: sanitize(formData.email),
+      message: sanitize(formData.message),
+    };
+
     try {
-      const response = await fetch('http://localhost:3000/api/contact', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+      const response = await fetch(`${apiUrl}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {
         setStatus({ state: 'success', message: t('contact.success') });
         setFormData({ name: '', email: '', message: '' });
+        setErrors({});
       } else {
-        setStatus({ state: 'error', message: t('contact.error_send') });
+        const data = await response.json().catch(() => ({}));
+        setStatus({
+          state: 'error',
+          message: data.error || t('contact.error_send'),
+        });
       }
     } catch (error) {
       setStatus({ state: 'error', message: t('contact.error_connection') });
@@ -77,6 +139,12 @@ export default function Contact() {
     return () => ctx.revert();
   }, []);
 
+  /* ── Inline error helper ── */
+  const fieldError = (field) =>
+    errors[field] ? (
+      <span className="font-body text-xs text-red-400 mt-1">{errors[field]}</span>
+    ) : null;
+
   return (
     <section
       id="contact"
@@ -114,6 +182,7 @@ export default function Contact() {
             ref={formRef}
             className="glass rounded-2xl p-8 sm:p-10 text-left flex flex-col gap-6"
             onSubmit={handleSubmit}
+            autoComplete="off"
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="flex flex-col gap-2">
@@ -121,7 +190,7 @@ export default function Contact() {
                   htmlFor="contact-name"
                   className="font-body text-sm text-light/60 uppercase tracking-wider"
                 >
-                  {t('contact.label_name')}
+                  {t('contact.label_name')} <span className="text-red-400">*</span>
                 </label>
                 <input
                   id="contact-name"
@@ -129,9 +198,13 @@ export default function Contact() {
                   value={formData.name}
                   onChange={handleChange}
                   placeholder={t('contact.placeholder_name')}
-                  className="form-input bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-light font-body placeholder:text-light/25"
+                  className={`form-input bg-white/5 border rounded-xl px-4 py-3 text-light font-body placeholder:text-light/25 transition-colors ${errors.name ? 'border-red-400/60' : 'border-white/10'
+                    }`}
                   disabled={status.state === 'loading'}
+                  autoComplete="off"
+                  maxLength={LIMITS.name}
                 />
+                {fieldError('name')}
               </div>
 
               <div className="flex flex-col gap-2">
@@ -139,17 +212,21 @@ export default function Contact() {
                   htmlFor="contact-email"
                   className="font-body text-sm text-light/60 uppercase tracking-wider"
                 >
-                  {t('contact.label_email')}
+                  {t('contact.label_email')} <span className="text-red-400">*</span>
                 </label>
                 <input
                   id="contact-email"
-                  type="email"
+                  type="text"
                   value={formData.email}
                   onChange={handleChange}
                   placeholder={t('contact.placeholder_email')}
-                  className="form-input bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-light font-body placeholder:text-light/25"
+                  className={`form-input bg-white/5 border rounded-xl px-4 py-3 text-light font-body placeholder:text-light/25 transition-colors ${errors.email ? 'border-red-400/60' : 'border-white/10'
+                    }`}
                   disabled={status.state === 'loading'}
+                  autoComplete="off"
+                  maxLength={LIMITS.email}
                 />
+                {fieldError('email')}
               </div>
             </div>
 
@@ -158,7 +235,7 @@ export default function Contact() {
                 htmlFor="contact-message"
                 className="font-body text-sm text-light/60 uppercase tracking-wider"
               >
-                {t('contact.label_message')}
+                {t('contact.label_message')} <span className="text-red-400">*</span>
               </label>
               <textarea
                 id="contact-message"
@@ -166,9 +243,18 @@ export default function Contact() {
                 value={formData.message}
                 onChange={handleChange}
                 placeholder={t('contact.placeholder_message')}
-                className="form-input bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-light font-body placeholder:text-light/25 resize-none"
+                className={`form-input bg-white/5 border rounded-xl px-4 py-3 text-light font-body placeholder:text-light/25 resize-none transition-colors ${errors.message ? 'border-red-400/60' : 'border-white/10'
+                  }`}
                 disabled={status.state === 'loading'}
+                autoComplete="off"
+                maxLength={LIMITS.message}
               />
+              <div className="flex justify-between items-center">
+                {fieldError('message')}
+                <span className="font-body text-xs text-light/20 ml-auto">
+                  {formData.message.length}/{LIMITS.message}
+                </span>
+              </div>
             </div>
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mt-2">
@@ -191,3 +277,4 @@ export default function Contact() {
     </section>
   );
 }
+

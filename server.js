@@ -6,9 +6,65 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const app = express();
-app.use(cors());
-app.use(express.json());
 
+/* ── CORS — restrict to known origins ── */
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:4173',
+  process.env.SITE_URL, // e.g. https://paulojimenez.dev
+].filter(Boolean);
+
+app.use(cors({
+  origin: (origin, cb) => {
+    // Allow requests with no origin (curl, Postman in dev)
+    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+    cb(new Error('CORS: origin not allowed'));
+  },
+}));
+
+app.use(express.json({ limit: '10kb' })); // reject large payloads
+
+/* ── Rate limiting (in-memory) ── */
+const rateLimitMap = new Map();
+const RATE_WINDOW = 15 * 60 * 1000; // 15 minutes
+const RATE_LIMIT = 5; // max requests per window per IP
+
+function rateLimit(req, res, next) {
+  const ip = req.ip || req.connection.remoteAddress;
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+
+  if (!entry || now - entry.start > RATE_WINDOW) {
+    rateLimitMap.set(ip, { start: now, count: 1 });
+    return next();
+  }
+
+  if (entry.count >= RATE_LIMIT) {
+    return res.status(429).json({ error: 'Too many requests. Please try again later.' });
+  }
+
+  entry.count++;
+  return next();
+}
+
+// Clean up expired entries periodically
+setInterval(() => {
+  const now = Date.now();
+  for (const [ip, entry] of rateLimitMap) {
+    if (now - entry.start > RATE_WINDOW) rateLimitMap.delete(ip);
+  }
+}, 60 * 1000);
+
+/* ── Sanitization helpers ── */
+const sanitize = (str) =>
+  String(str).replace(/<[^>]*>/g, '').replace(/[<>]/g, '').trim();
+
+const isValidEmail = (email) =>
+  /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(email);
+
+const LIMITS = { name: 100, email: 254, message: 500 };
+
+/* ── Nodemailer transporter ── */
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -17,12 +73,28 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-app.post('/api/contact', async (req, res) => {
-  const { name, email, message } = req.body;
+/* ── Contact endpoint ── */
+app.post('/api/contact', rateLimit, async (req, res) => {
+  const { name: rawName, email: rawEmail, message: rawMessage } = req.body;
 
-  if (!name || !email || !message) {
-    return res.status(400).json({ error: 'All fields are required.' });
+  // Sanitize all inputs
+  const name = sanitize(rawName || '');
+  const email = sanitize(rawEmail || '');
+  const message = sanitize(rawMessage || '');
+
+  // Validate
+  if (!name || name.length < 2 || name.length > LIMITS.name) {
+    return res.status(400).json({ error: 'Invalid name.' });
   }
+  if (!email || !isValidEmail(email) || email.length > LIMITS.email) {
+    return res.status(400).json({ error: 'Invalid email address.' });
+  }
+  if (!message || message.length < 10 || message.length > LIMITS.message) {
+    return res.status(400).json({ error: 'Message must be between 10 and 500 characters.' });
+  }
+
+  // Escape for safe HTML insertion (double-defense after sanitize)
+  const esc = (s) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 
   const htmlTemplate = `
     <!DOCTYPE html>
@@ -109,17 +181,17 @@ app.post('/api/contact', async (req, res) => {
         
         <div class="field">
           <div class="label">Remitente</div>
-          <div class="value"><span class="highlight">${name}</span></div>
+          <div class="value"><span class="highlight">${esc(name)}</span></div>
         </div>
 
         <div class="field">
           <div class="label">Email de Contacto</div>
-          <div class="value"><a href="mailto:${email}" style="color: #F5F5F0; text-decoration: none; border-bottom: 1px solid rgba(245, 245, 240, 0.3); padding-bottom: 2px;">${email}</a></div>
+          <div class="value"><a href="mailto:${esc(email)}" style="color: #F5F5F0; text-decoration: none; border-bottom: 1px solid rgba(245, 245, 240, 0.3); padding-bottom: 2px;">${esc(email)}</a></div>
         </div>
         
         <div class="field">
           <div class="label">Mensaje</div>
-          <div class="message-box">${message}</div>
+          <div class="message-box">${esc(message)}</div>
         </div>
         
         <div class="footer">
@@ -131,10 +203,10 @@ app.post('/api/contact', async (req, res) => {
   `;
 
   const mailOptions = {
-    from: `"${name}" <${email}>`, // sender address
-    to: process.env.GMAIL_USER, // receiver (you)
-    subject: ` Nuevo Mensaje de Portafolio: ${name}`, // Subject line
-    text: `Nombre: ${name}\nEmail: ${email}\n\nMensaje:\n${message}`, // plain text fallback
+    from: `"Portfolio Contact" <${process.env.GMAIL_USER}>`,
+    to: process.env.GMAIL_USER,
+    subject: `Nuevo Mensaje de Portafolio: ${esc(name)}`,
+    text: `Nombre: ${name}\nEmail: ${email}\n\nMensaje:\n${message}`,
     html: htmlTemplate,
     replyTo: email,
   };
@@ -152,3 +224,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
