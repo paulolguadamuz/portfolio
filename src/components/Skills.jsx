@@ -8,6 +8,7 @@ import {
   SiTailwindcss,
   SiPython,
   SiPostgresql,
+  SiNextdotjs,
 } from 'react-icons/si';
 import { useLang } from '../i18n/LanguageContext';
 
@@ -31,6 +32,11 @@ const SKILLS = [
     id: 'tailwind',
     icon: SiTailwindcss,
     color: '#06B6D4',
+  },
+  {
+    id: 'nextjs',
+    icon: SiNextdotjs,
+    color: '#FFFFFF',
   },
   {
     id: 'sql',

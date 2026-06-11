@@ -67,7 +67,7 @@ const translations = {
 
     // Skills
     skills: {
-      title: 'Tecnologías',
+      title: 'Habilidades',
       items: {
         react: {
           name: 'React',
@@ -84,6 +84,10 @@ const translations = {
         tailwind: {
           name: 'Tailwind CSS',
           desc: 'Maquetación ágil con utility-first, diseño responsivo y sistemas de diseño consistentes sin CSS redundante.',
+        },
+        nextjs: {
+          name: 'Next.js',
+          desc: 'Creación de aplicaciones web optimizadas, renderizado del lado del servidor (SSR) y generación de sitios estáticos (SSG).',
         },
         sql: {
           name: 'SQL',
@@ -187,6 +191,10 @@ const translations = {
         tailwind: {
           name: 'Tailwind CSS',
           desc: 'Rapid utility-first layouts, responsive design and consistent design systems without redundant CSS.',
+        },
+        nextjs: {
+          name: 'Next.js',
+          desc: 'Building optimized web applications, server-side rendering (SSR), and static site generation (SSG).',
         },
         sql: {
           name: 'SQL',
