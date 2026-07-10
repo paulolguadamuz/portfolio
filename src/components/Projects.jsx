@@ -5,7 +5,11 @@ import { FiGithub, FiX } from 'react-icons/fi';
 import { projects } from '../data/projects';
 import ProjectCard from './ProjectCard';
 import MeaCulpaShowcase from './MeaCulpaShowcase';
+import NovaSiteShowcase from './NovaSiteShowcase';
 import { useLang } from '../i18n/LanguageContext';
+
+// IDs of projects that have a case study showcase
+const SHOWCASE_IDS = [1, 4];
 
 export default function Projects() {
   const { t } = useLang();
@@ -13,18 +17,21 @@ export default function Projects() {
   const ctaRef = useRef(null);
   const [activeImage, setActiveImage] = useState(null);
 
-  // Showcase expand/collapse state
-  const [showcaseOpen, setShowcaseOpen] = useState(false);
+  // Showcase expand/collapse state — keyed by project id
+  const [showcaseOpen, setShowcaseOpen] = useState(null); // null = none open, or project id
   const [isAnimating, setIsAnimating] = useState(false);
-  const showcaseContainerRef = useRef(null);
-  const showcaseRef = useRef(null);
+  const showcaseContainerRefs = useRef({});
+  const showcaseContentRefs = useRef({});
+
+  // Ref-based lock so ScrollTrigger closures can check showcase state
+  const showcaseLockRef = useRef(false);
 
   // Close modal on escape key
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
         setActiveImage(null);
-        if (showcaseOpen && !isAnimating) handleCloseShowcase();
+        if (showcaseOpen !== null && !isAnimating) handleCloseShowcase();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -47,6 +54,7 @@ export default function Projects() {
             end: 'top 20%',
             scrub: 1,
             onUpdate: (self) => {
+              if (showcaseLockRef.current) return;
               const progress = self.progress;
               document.body.style.setProperty(
                 '--bg-from',
@@ -67,6 +75,7 @@ export default function Projects() {
             end: 'bottom 20%',
             scrub: 1,
             onUpdate: (self) => {
+              if (showcaseLockRef.current) return;
               const progress = self.progress;
               document.body.style.setProperty(
                 '--bg-from',
@@ -93,6 +102,7 @@ export default function Projects() {
             end: 'bottom 20%',
             scrub: 1,
             onUpdate: (self) => {
+              if (showcaseLockRef.current) return;
               const progress = self.progress;
               document.body.style.setProperty(
                 '--bg-from',
@@ -132,16 +142,45 @@ export default function Projects() {
     return () => ctx.revert();
   }, []);
 
+  // Helper: instantly collapse a showcase container (no animation)
+  const instantClose = useCallback((projectId) => {
+    const container = showcaseContainerRefs.current[projectId];
+    if (!container) return;
+    gsap.killTweensOf(container);
+    gsap.killTweensOf(container.querySelectorAll('*'));
+    gsap.set(container, { height: 0, opacity: 0 });
+  }, []);
+
   // Open the showcase with orchestrated animation
-  const handleOpenShowcase = useCallback(() => {
-    if (isAnimating || showcaseOpen) return;
+  const handleOpenShowcase = useCallback((projectId) => {
+    if (isAnimating) return;
+
+    // If the same showcase is already open, do nothing
+    if (showcaseOpen === projectId) return;
+
+    // If a different showcase is open, close it instantly first
+    if (showcaseOpen !== null) {
+      const prevId = showcaseOpen;
+      instantClose(prevId);
+      setShowcaseOpen(null);
+      showcaseLockRef.current = false;
+    }
+
     setIsAnimating(true);
-    setShowcaseOpen(true);
+    setShowcaseOpen(projectId);
+
+    // Lock background color to this project's palette
+    const project = projects.find(p => p.id === projectId);
+    if (project) {
+      showcaseLockRef.current = true;
+      document.body.style.setProperty('--bg-from', project.palette.from);
+      document.body.style.setProperty('--bg-to', project.palette.to);
+    }
 
     // Wait for React to mount the content
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        const container = showcaseContainerRef.current;
+        const container = showcaseContainerRefs.current[projectId];
         if (!container) return;
 
         // Measure natural height
@@ -180,8 +219,9 @@ export default function Projects() {
         }
 
         // Trigger the content's staggered reveal
-        if (showcaseRef.current?.animateIn) {
-          const contentTl = showcaseRef.current.animateIn();
+        const contentRef = showcaseContentRefs.current[projectId];
+        if (contentRef?.animateIn) {
+          const contentTl = contentRef.animateIn();
           tl.add(contentTl, 0.4);
         }
 
@@ -191,27 +231,32 @@ export default function Projects() {
         }, 300);
       });
     });
-  }, [isAnimating, showcaseOpen]);
+  }, [isAnimating, showcaseOpen, instantClose]);
 
   // Close the showcase with reverse animation
   const handleCloseShowcase = useCallback(() => {
-    if (isAnimating || !showcaseOpen) return;
+    if (isAnimating || showcaseOpen === null) return;
     setIsAnimating(true);
 
-    const container = showcaseContainerRef.current;
+    const currentId = showcaseOpen;
+    const container = showcaseContainerRefs.current[currentId];
     if (!container) return;
+
+    // Unlock background colors so ScrollTrigger can resume
+    showcaseLockRef.current = false;
 
     const tl = gsap.timeline({
       onComplete: () => {
-        setShowcaseOpen(false);
+        setShowcaseOpen(null);
         setIsAnimating(false);
         ScrollTrigger.refresh();
       },
     });
 
     // First animate content out
-    if (showcaseRef.current?.animateOut) {
-      const contentTl = showcaseRef.current.animateOut();
+    const contentRef = showcaseContentRefs.current[currentId];
+    if (contentRef?.animateOut) {
+      const contentTl = contentRef.animateOut();
       tl.add(contentTl, 0);
     }
 
@@ -242,39 +287,58 @@ export default function Projects() {
 
       {/* Project cards — increased gap for slower color transitions */}
       <div className="flex flex-col gap-56 lg:gap-72">
-        {projects.map((project, index) => (
-          <div key={project.id} className="project-section py-16">
-            <ProjectCard
-              project={project}
-              index={index}
-              onImageClick={setActiveImage}
-              onShowcase={project.id === 4 ? handleOpenShowcase : undefined}
-              showcaseOpen={project.id === 4 ? showcaseOpen : false}
-            />
-          </div>
-        ))}
+        {projects.map((project, index) => {
+          const hasShowcase = SHOWCASE_IDS.includes(project.id);
+          return (
+            <div key={project.id}>
+              <div className="project-section py-16">
+                <ProjectCard
+                  project={project}
+                  index={index}
+                  onImageClick={setActiveImage}
+                  onShowcase={hasShowcase ? () => handleOpenShowcase(project.id) : undefined}
+                  showcaseOpen={showcaseOpen === project.id}
+                />
+              </div>
+
+              {/* Expandable showcase — rendered right after its project card */}
+              {hasShowcase && (
+                <div
+                  ref={(el) => { showcaseContainerRefs.current[project.id] = el; }}
+                  className="showcase-container"
+                  style={{ height: 0, opacity: 0, overflow: 'hidden' }}
+                >
+                  {/* Top separator line */}
+                  <div className="max-w-6xl mx-auto px-6 lg:px-8">
+                    <div
+                      className="showcase-separator h-px w-full origin-left"
+                      style={{ background: `linear-gradient(to right, transparent, ${project.palette.accent}40, transparent)` }}
+                    />
+                  </div>
+
+                  <div className="showcase-inner">
+                    {showcaseOpen === project.id && (
+                      project.id === 4 ? (
+                        <MeaCulpaShowcase
+                          ref={(el) => { showcaseContentRefs.current[project.id] = el; }}
+                          onClose={handleCloseShowcase}
+                        />
+                      ) : project.id === 1 ? (
+                        <NovaSiteShowcase
+                          ref={(el) => { showcaseContentRefs.current[project.id] = el; }}
+                          onClose={handleCloseShowcase}
+                        />
+                      ) : null
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
 
-      {/* Expandable Mea Culpa Showcase */}
-      <div
-        ref={showcaseContainerRef}
-        className="showcase-container"
-        style={{ height: 0, opacity: 0, overflow: 'hidden' }}
-      >
-        {/* Top separator line */}
-        <div className="max-w-6xl mx-auto px-6 lg:px-8">
-          <div
-            className="showcase-separator h-px w-full origin-left"
-            style={{ background: `linear-gradient(to right, transparent, #D4A63640, transparent)` }}
-          />
-        </div>
 
-        <div className="showcase-inner">
-          {showcaseOpen && (
-            <MeaCulpaShowcase ref={showcaseRef} onClose={handleCloseShowcase} />
-          )}
-        </div>
-      </div>
 
       {/* GitHub CTA — centered before contact */}
       <div ref={ctaRef} className="flex justify-center mt-32 mb-8">

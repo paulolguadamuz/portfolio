@@ -10,7 +10,7 @@ export const projects = [
       "/projects/NovasiteMembers.png",
       "/projects/NovasiteContact.png",
     ],
-    tags: ["React", "JavaScript", "Lenis"],
+    tags: ["Next.js", "TypeScript", "Tailwind CSS", "GSAP"],
     url: "https://www.novacr.site",
     palette: {
       from: "#09090A",
@@ -32,9 +32,9 @@ export const projects = [
     tags: ["E-commerce", "PayPal", "SINPE", "Catálogo"],
     url: "https://bougan-villea.vercel.app/",
     palette: {
-      from: "#FAFEF8",
-      to: "#78464C",
-      accent: "#C12880",
+      from: "#4E0D33",
+      to: "#C12880",
+      accent: "#F365B3",
       surface: "#FFFFFF",
     },
   },

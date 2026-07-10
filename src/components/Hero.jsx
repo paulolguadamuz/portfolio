@@ -1,8 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import gsap from 'gsap';
 import { useLang } from '../i18n/LanguageContext';
 
-export default function Hero() {
+export default function Hero({ lenisRef }) {
   const { t } = useLang();
   const sectionRef = useRef(null);
   const nameRef = useRef(null);
@@ -138,12 +138,26 @@ export default function Hero() {
           <div className="flex gap-4 mt-6">
             <a
               href="#projects"
+              onClick={(e) => {
+                e.preventDefault();
+                const target = document.querySelector('#projects');
+                if (target && lenisRef?.current) {
+                  lenisRef.current.scrollTo(target, { offset: -80, duration: 1.8 });
+                }
+              }}
               className="font-body text-sm uppercase tracking-widest px-8 py-4 border border-light/30 rounded-full text-light hover:bg-light hover:text-dark transition-all duration-300 backdrop-blur-md bg-black/20"
             >
               {t('hero.cta_projects')}
             </a>
             <a
               href="#contact"
+              onClick={(e) => {
+                e.preventDefault();
+                const target = document.querySelector('#contact');
+                if (target && lenisRef?.current) {
+                  lenisRef.current.scrollTo(target, { offset: -80, duration: 1.8 });
+                }
+              }}
               className="font-body text-sm uppercase tracking-widest px-8 py-4 bg-light text-dark rounded-full hover:bg-light/90 transition-all duration-300 shadow-xl"
             >
               {t('hero.cta_contact')}

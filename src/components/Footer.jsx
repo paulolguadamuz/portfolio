@@ -21,7 +21,7 @@ const SOCIALS = [
   },
   {
     icon: FiInstagram,
-    href: 'https://www.instagram.com/paulogdzz/',
+    href: 'https://www.instagram.com/paulo.tgz/',
     label: 'Instagram',
   },
   {

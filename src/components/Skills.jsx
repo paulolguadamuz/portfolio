@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
+  SiDotnet,
   SiReact,
   SiJavascript,
   SiTypescript,
@@ -13,6 +14,11 @@ import {
 import { useLang } from '../i18n/LanguageContext';
 
 const SKILLS = [
+  {
+    id: 'dotnet',
+    icon: SiDotnet,
+    color: '#512BD4',
+  },
   {
     id: 'react',
     icon: SiReact,

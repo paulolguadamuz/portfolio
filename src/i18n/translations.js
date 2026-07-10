@@ -72,6 +72,10 @@ const translations = {
     skills: {
       title: 'Habilidades',
       items: {
+        dotnet: {
+          name: '.NET',
+          desc: 'Desarrollo de backend robusto, APIs REST de alto rendimiento, microservicios y arquitectura limpia empresarial con C# y .NET 8.',
+        },
         react: {
           name: 'React',
           desc: 'Desarrollo de interfaces dinámicas con componentes reutilizables, hooks y gestión de estado para aplicaciones web de alto rendimiento.',
@@ -161,6 +165,60 @@ const translations = {
       cta: 'Explorar Mea Culpa',
       close: 'Cerrar caso',
     },
+
+    // NovaSite Showcase
+    novasite: {
+      label: 'Caso de estudio',
+      heading: 'Dentro de NovaSite',
+      intro: 'Sitio web corporativo para NovaSite, un estudio de desarrollo de software, construido con Next.js 15, React 19, TypeScript y Tailwind CSS. Incluye landing page, secciones de servicios, proyectos, sobre nosotros y contacto, con un sistema de envío de correos integrado.',
+      features: {
+        carousel: {
+          title: 'Carrusel de Integrantes',
+          desc: 'Sección "equipo" con carrusel responsive: versión táctil/mobile y versión 3D tipo coverflow en desktop, con pausa automática al interactuar (hover / touch).',
+        },
+        animations: {
+          title: 'Animaciones con GSAP',
+          desc: 'Efectos de scroll (ScrollTrigger), animaciones de texto en el hero, botones magnéticos y transiciones de hover en tarjetas de proyectos, integrados vía @gsap/react.',
+        },
+        contact: {
+          title: 'Apartado de Contacto',
+          desc: 'Formulario funcional con validaciones y protección anti-spam mediante Cloudflare Turnstile.',
+        },
+        email: {
+          title: 'Envío Automático de Correos',
+          desc: 'Endpoint POST /api/contact que valida los datos, verifica el captcha y envía el mensaje por correo usando Nodemailer (Gmail).',
+        },
+      },
+      contrib_label: 'Mi rol',
+      contrib_heading: 'Mi Aporte (Front-end)',
+      contributions: {
+        carousel_impl: {
+          title: 'Carrusel de Equipo',
+          desc: 'Implementación del carrusel responsive con versión táctil para mobile y efecto coverflow 3D en desktop, con pausa automática al interactuar.',
+        },
+        gsap_anims: {
+          title: 'Animaciones GSAP',
+          desc: 'Desarrollo de efectos de scroll con ScrollTrigger, animaciones de texto en el hero, botones magnéticos y transiciones de hover en tarjetas.',
+        },
+        contact_form: {
+          title: 'Formulario de Contacto',
+          desc: 'Formulario funcional con validaciones completas y protección anti-spam integrada con Cloudflare Turnstile.',
+        },
+        social: {
+          title: 'Redes Sociales',
+          desc: 'Botones de contacto directo (WhatsApp, Instagram) integrados en el layout del sitio.',
+        },
+      },
+      stack: {
+        title: 'Stack Tecnológico',
+        integrations_label: 'Integraciones',
+        frontend: 'Next.js 15, React 19, TypeScript, Tailwind CSS, GSAP (@gsap/react).',
+        backend: 'Next.js API Routes, Nodemailer (Gmail SMTP).',
+        integrations: 'Cloudflare Turnstile, WhatsApp API, Instagram.',
+      },
+      cta: 'Explorar NovaSite',
+      close: 'Cerrar caso',
+    },
   },
 
   en: {
@@ -236,6 +294,10 @@ const translations = {
     skills: {
       title: 'Skills',
       items: {
+        dotnet: {
+          name: '.NET',
+          desc: 'Building robust backend systems, high-performance REST APIs, microservices, and enterprise clean architecture using C# and .NET 8.',
+        },
         react: {
           name: 'React',
           desc: 'Building dynamic interfaces with reusable components, hooks and state management for high-performance web applications.',
@@ -323,6 +385,89 @@ const translations = {
         integrations: 'PayPal SDK / Webhooks, Nivel20 API, procedural dice roll module.',
       },
       cta: 'Explore Mea Culpa',
+      close: 'Close case',
+    },
+
+    // NovaSite Showcase
+    novasite: {
+      label: 'Case study',
+      heading: 'Inside NovaSite',
+      intro: 'Corporate website for NovaSite, a software development studio, built with Next.js 15, React 19, TypeScript and Tailwind CSS. Includes a landing page, services, projects, about us and contact sections, with an integrated email system.',
+      features: {
+        carousel: {
+          title: 'Team Carousel',
+          desc: 'Team section with responsive carousel: touch/mobile version and 3D coverflow-style version on desktop, with auto-pause on interaction (hover / touch).',
+        },
+        animations: {
+          title: 'GSAP Animations',
+          desc: 'Scroll effects (ScrollTrigger), hero text animations, magnetic buttons and project card hover transitions, integrated via @gsap/react.',
+        },
+        contact: {
+          title: 'Contact Section',
+          desc: 'Functional form with validations and anti-spam protection via Cloudflare Turnstile.',
+        },
+        email: {
+          title: 'Automatic Email Sending',
+          desc: 'POST /api/contact endpoint that validates data, verifies the captcha and sends the message via email using Nodemailer (Gmail).',
+        },
+      },
+      contrib_label: 'My role',
+      contrib_heading: 'My Contribution (Front-end)',
+      contributions: {
+        carousel_impl: {
+          title: 'Team Carousel',
+          desc: 'Implementation of the responsive carousel with touch version for mobile and 3D coverflow effect on desktop, with auto-pause on interaction.',
+        },
+        gsap_anims: {
+          title: 'GSAP Animations',
+          desc: 'Development of scroll effects with ScrollTrigger, hero text animations, magnetic buttons and card hover transitions.',
+        },
+        contact_form: {
+          title: 'Contact Form',
+          desc: 'Functional form with comprehensive validations and anti-spam protection integrated with Cloudflare Turnstile.',
+        },
+        social: {
+          title: 'Social Media',
+          desc: 'Direct contact buttons (WhatsApp, Instagram) integrated into the site layout.',
+        },
+      },
+      stack: {
+        title: 'Tech Stack',
+        integrations_label: 'Integrations',
+        frontend: 'Next.js 15, React 19, TypeScript, Tailwind CSS, GSAP (@gsap/react).',
+        backend: 'Next.js API Routes, Nodemailer (Gmail SMTP).',
+        integrations: 'Cloudflare Turnstile, WhatsApp API, Instagram.',
+      },
+      structure: {
+        title: 'Project Structure',
+        files: {
+          page: {
+            path: 'src/app/page.tsx',
+            desc: 'Landing page — hero, team carousel, projects, GSAP animations.',
+          },
+          contacto: {
+            path: 'src/app/contacto/',
+            desc: 'Contact page with form and validations.',
+          },
+          servicios: {
+            path: 'src/app/servicios/',
+            desc: 'Services offered by the studio.',
+          },
+          proyectos: {
+            path: 'src/app/proyectos/',
+            desc: 'Team project portfolio.',
+          },
+          sobre_nosotros: {
+            path: 'src/app/sobre-nosotros/',
+            desc: 'Team and company information.',
+          },
+          api: {
+            path: 'src/app/api/contact/route.ts',
+            desc: 'API route for automatic email sending.',
+          },
+        },
+      },
+      cta: 'Explore NovaSite',
       close: 'Close case',
     },
   },

@@ -48,7 +48,7 @@ function App() {
     <LanguageProvider>
       <Navbar lenisRef={lenisRef} />
       <main>
-        <Hero />
+        <Hero lenisRef={lenisRef} />
         <Skills />
         <Projects />
         <Contact />
