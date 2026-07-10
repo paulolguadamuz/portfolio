@@ -58,4 +58,23 @@ export const projects = [
       surface: "#F0F5F9",
     },
   },
+  {
+    id: 4,
+    title: "Mea Culpa",
+    description:
+      "Plataforma online del Juego de mesa estilo Calabozos y Dragones (D&D), con perfiles de personaje, inventario interactivo, compendio de conjuros, comercio en tiempo real, gremios y pasarela de pagos PayPal. Construida con Next.js, TypeScript, Supabase (PostgreSQL + RLS) y Tailwind CSS.",
+    image: "/projects/HomepageMeaCulpa.png",
+    gallery: [
+      "/projects/PersonajeMeaCulpa.png",
+      "/projects/ConjurosMeaCulpa.png",
+    ],
+    tags: ["Next.js", "TypeScript", "Supabase", "PayPal"],
+    url: "https://www.meaculpadnd.com",
+    palette: {
+      from: "#1A1108",
+      to: "#2C1A0A",
+      accent: "#D4A636",
+      surface: "#F5E6C8",
+    },
+  },
 ];

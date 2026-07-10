@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { FiGithub, FiX } from 'react-icons/fi';
 import { projects } from '../data/projects';
 import ProjectCard from './ProjectCard';
+import MeaCulpaShowcase from './MeaCulpaShowcase';
 import { useLang } from '../i18n/LanguageContext';
 
 export default function Projects() {
@@ -12,14 +13,23 @@ export default function Projects() {
   const ctaRef = useRef(null);
   const [activeImage, setActiveImage] = useState(null);
 
+  // Showcase expand/collapse state
+  const [showcaseOpen, setShowcaseOpen] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const showcaseContainerRef = useRef(null);
+  const showcaseRef = useRef(null);
+
   // Close modal on escape key
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') setActiveImage(null);
+      if (e.key === 'Escape') {
+        setActiveImage(null);
+        if (showcaseOpen && !isAnimating) handleCloseShowcase();
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [showcaseOpen, isAnimating]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -122,6 +132,104 @@ export default function Projects() {
     return () => ctx.revert();
   }, []);
 
+  // Open the showcase with orchestrated animation
+  const handleOpenShowcase = useCallback(() => {
+    if (isAnimating || showcaseOpen) return;
+    setIsAnimating(true);
+    setShowcaseOpen(true);
+
+    // Wait for React to mount the content
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const container = showcaseContainerRef.current;
+        if (!container) return;
+
+        // Measure natural height
+        const inner = container.querySelector('.showcase-inner');
+        inner.style.position = 'relative';
+        const naturalHeight = inner.scrollHeight;
+
+        // Animate the container open
+        const tl = gsap.timeline({
+          onComplete: () => {
+            setIsAnimating(false);
+            // Refresh ScrollTrigger after layout change
+            ScrollTrigger.refresh();
+          },
+        });
+
+        // Container height + opacity
+        tl.fromTo(container,
+          { height: 0, opacity: 0 },
+          {
+            height: naturalHeight,
+            opacity: 1,
+            duration: 0.9,
+            ease: 'expo.inOut',
+          }
+        );
+
+        // Separator line draws in
+        const separator = container.querySelector('.showcase-separator');
+        if (separator) {
+          tl.fromTo(separator,
+            { scaleX: 0 },
+            { scaleX: 1, duration: 0.6, ease: 'expo.out' },
+            0.3
+          );
+        }
+
+        // Trigger the content's staggered reveal
+        if (showcaseRef.current?.animateIn) {
+          const contentTl = showcaseRef.current.animateIn();
+          tl.add(contentTl, 0.4);
+        }
+
+        // Smooth scroll to the showcase
+        setTimeout(() => {
+          container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 300);
+      });
+    });
+  }, [isAnimating, showcaseOpen]);
+
+  // Close the showcase with reverse animation
+  const handleCloseShowcase = useCallback(() => {
+    if (isAnimating || !showcaseOpen) return;
+    setIsAnimating(true);
+
+    const container = showcaseContainerRef.current;
+    if (!container) return;
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        setShowcaseOpen(false);
+        setIsAnimating(false);
+        ScrollTrigger.refresh();
+      },
+    });
+
+    // First animate content out
+    if (showcaseRef.current?.animateOut) {
+      const contentTl = showcaseRef.current.animateOut();
+      tl.add(contentTl, 0);
+    }
+
+    // Separator retracts
+    const separator = container.querySelector('.showcase-separator');
+    if (separator) {
+      tl.to(separator, { scaleX: 0, duration: 0.3, ease: 'expo.in' }, 0.3);
+    }
+
+    // Then collapse the container
+    tl.to(container, {
+      height: 0,
+      opacity: 0,
+      duration: 0.7,
+      ease: 'expo.inOut',
+    }, 0.45);
+  }, [isAnimating, showcaseOpen]);
+
   return (
     <section id="projects" ref={wrapperRef} className="relative py-24">
       {/* Section heading */}
@@ -136,9 +244,36 @@ export default function Projects() {
       <div className="flex flex-col gap-56 lg:gap-72">
         {projects.map((project, index) => (
           <div key={project.id} className="project-section py-16">
-            <ProjectCard project={project} index={index} onImageClick={setActiveImage} />
+            <ProjectCard
+              project={project}
+              index={index}
+              onImageClick={setActiveImage}
+              onShowcase={project.id === 4 ? handleOpenShowcase : undefined}
+              showcaseOpen={project.id === 4 ? showcaseOpen : false}
+            />
           </div>
         ))}
+      </div>
+
+      {/* Expandable Mea Culpa Showcase */}
+      <div
+        ref={showcaseContainerRef}
+        className="showcase-container"
+        style={{ height: 0, opacity: 0, overflow: 'hidden' }}
+      >
+        {/* Top separator line */}
+        <div className="max-w-6xl mx-auto px-6 lg:px-8">
+          <div
+            className="showcase-separator h-px w-full origin-left"
+            style={{ background: `linear-gradient(to right, transparent, #D4A63640, transparent)` }}
+          />
+        </div>
+
+        <div className="showcase-inner">
+          {showcaseOpen && (
+            <MeaCulpaShowcase ref={showcaseRef} onClose={handleCloseShowcase} />
+          )}
+        </div>
       </div>
 
       {/* GitHub CTA — centered before contact */}

@@ -25,6 +25,7 @@ const translations = {
         1: 'Sitio web corporativo para un equipo de desarrollo de software, diseñado para presentar proyectos, mostrar al equipo y captar clientes. Construido con React, JavaScript y Lenis para una experiencia de scroll fluida y profesional.',
         2: 'E-commerce de café de especialidad con catálogo interactivo, carrito moderno y pasarelas de pago integradas (PayPal y SINPE). Incluye secciones de about, contacto y una experiencia de compra enfocada en transmitir la identidad artesanal de la marca.',
         3: 'Plataforma de gestión de mantenimiento industrial para pequeñas fábricas. Permite a los operarios reportar fallas escaneando un QR en cada máquina y genera recordatorios automáticos de revisiones preventivas, eliminando el caos de WhatsApp y minimizando paros en la línea de producción.',
+        4: 'Plataforma online del Juego de mesa estilo Calabozos y Dragones (D&D), con perfiles de personaje, inventario interactivo, compendio de conjuros, comercio en tiempo real, gremios y pasarela de pagos PayPal. Construida con Next.js, TypeScript, Supabase (PostgreSQL + RLS) y Tailwind CSS.',
       },
       tags: {
         'Catálogo': 'Catálogo',
@@ -33,6 +34,8 @@ const translations = {
       },
       visit_site: 'Visitar sitio',
       private_saas: 'SaaS Privado — Acceso Restringido',
+      case_study: 'Ver caso de estudio',
+      case_study_active: 'Caso abierto',
     },
 
     // Contact
@@ -104,6 +107,60 @@ const translations = {
     whatsapp: {
       label: 'Contactar por WhatsApp',
     },
+
+    // Mea Culpa Showcase
+    meaculpa: {
+      label: 'Caso de estudio',
+      heading: 'Dentro de Mea Culpa',
+      intro: 'Plataforma interactiva full-stack para la gestión integral de campañas y personajes del Juego de mesa estilo Calabozos y Dragones (D&D), con arquitectura moderna, base de datos segura y funcionalidades en tiempo real.',
+      features: {
+        characters: {
+          title: 'Gestión de Personajes',
+          desc: 'Perfiles con progresión hasta nivel 20, inventario inteligente con bolsas dinámicas, equipamiento con ranuras (armas, capas, anillos) y seguimiento de signos vitales.',
+        },
+        spells: {
+          title: 'Compendio de Conjuros',
+          desc: 'Base de datos interactiva con cientos de hechizos, buscador avanzado por escuela/nivel y sistema de validación de conjuros por personaje.',
+        },
+        commerce: {
+          title: 'Economía y Comercio',
+          desc: 'Sistema transaccional con auditoría completa (RLS), tiendas con catálogos dinámicos, mercado en tiempo real y gremios con baúles compartidos.',
+        },
+        sessions: {
+          title: 'Salas en Tiempo Real',
+          desc: 'Salas interactivas para DMs y jugadores con sincronización de eventos, módulo visual de dados y tablas de recompensas automáticas.',
+        },
+      },
+      contrib_label: 'Mi rol',
+      contrib_heading: 'Contribuciones al Proyecto',
+      contributions: {
+        profiles: {
+          title: 'Perfiles de Personaje',
+          desc: 'Diseño e implementación de la ficha de personaje, inventario interactivo, sistema de equipamiento y visualización de estados vitales.',
+        },
+        spells_module: {
+          title: 'Módulo de Conjuros',
+          desc: 'Construcción del compendio interactivo con filtros avanzados por escuela y nivel, además del sistema de asignación de hechizos.',
+        },
+        bugfix: {
+          title: 'Bugfixing y Optimización',
+          desc: 'Diagnóstico y corrección de errores en flujos críticos frontend/backend, mejorando estabilidad transaccional y sincronización con Supabase.',
+        },
+        support: {
+          title: 'Soporte a Clientes',
+          desc: 'Asistencia técnica directa a usuarios y directores de juego, resolución de incidencias en partidas y soporte en vivo durante eventos.',
+        },
+      },
+      stack: {
+        title: 'Stack Tecnológico',
+        integrations_label: 'Integraciones',
+        frontend: 'Next.js (App Router), React, TypeScript, Tailwind CSS, CSS Modular.',
+        backend: 'Supabase (PostgreSQL, Row Level Security, RPC/Funciones SQL), Next.js API Routes.',
+        integrations: 'PayPal SDK / Webhooks, Nivel20 API, módulo de tiradas procedurales.',
+      },
+      cta: 'Explorar Mea Culpa',
+      close: 'Cerrar caso',
+    },
   },
 
   en: {
@@ -132,6 +189,7 @@ const translations = {
         1: 'Corporate website for a software development team, designed to showcase projects, present the team and attract clients. Built with React, JavaScript and Lenis for a smooth and professional scrolling experience.',
         2: 'Specialty coffee e-commerce with interactive catalog, modern cart and integrated payment gateways (PayPal & SINPE). Includes about, contact sections and a shopping experience focused on conveying the artisan brand identity.',
         3: 'Industrial maintenance management platform for small factories. Allows operators to report failures by scanning a QR code on each machine and generates automatic reminders for preventive reviews, eliminating WhatsApp chaos and minimizing production line stoppages.',
+        4: 'Online platform for the Dungeons & Dragons-style board game, featuring character profiles, interactive inventory, spell compendium, real-time trading, guilds, and PayPal payment gateway. Built with Next.js, TypeScript, Supabase (PostgreSQL + RLS) and Tailwind CSS.',
       },
       tags: {
         'Catálogo': 'Catalog',
@@ -140,6 +198,8 @@ const translations = {
       },
       visit_site: 'Visit site',
       private_saas: 'Private SaaS — Restricted Access',
+      case_study: 'View case study',
+      case_study_active: 'Case open',
     },
 
     // Contact
@@ -210,6 +270,60 @@ const translations = {
     // WhatsApp
     whatsapp: {
       label: 'Contact via WhatsApp',
+    },
+
+    // Mea Culpa Showcase
+    meaculpa: {
+      label: 'Case study',
+      heading: 'Inside Mea Culpa',
+      intro: 'Full-stack interactive platform for comprehensive campaign and character management of the D&D style board game, featuring modern architecture, secure database, and real-time capabilities.',
+      features: {
+        characters: {
+          title: 'Character Management',
+          desc: 'Profiles with progression up to level 20, smart inventory with dynamic bags, equipment slots (weapons, cloaks, rings) and vital signs tracking.',
+        },
+        spells: {
+          title: 'Spell Compendium',
+          desc: 'Interactive database with hundreds of spells, advanced search by school/level and per-character spell validation system.',
+        },
+        commerce: {
+          title: 'Economy & Trading',
+          desc: 'Transactional system with full audit trail (RLS), shops with dynamic catalogs, real-time marketplace and guilds with shared vaults.',
+        },
+        sessions: {
+          title: 'Real-Time Sessions',
+          desc: 'Interactive rooms for DMs and players with event sync, visual dice module and automatic loot reward tables.',
+        },
+      },
+      contrib_label: 'My role',
+      contrib_heading: 'Project Contributions',
+      contributions: {
+        profiles: {
+          title: 'Character Profiles',
+          desc: 'Design and implementation of character sheets, interactive inventory, equipment system and vital state visualization.',
+        },
+        spells_module: {
+          title: 'Spell Module',
+          desc: 'Built the interactive compendium with advanced school/level filters and spell assignment system.',
+        },
+        bugfix: {
+          title: 'Bugfixing & Optimization',
+          desc: 'Diagnosis and resolution of critical frontend/backend bugs, improving transactional stability and Supabase sync.',
+        },
+        support: {
+          title: 'Client Support',
+          desc: 'Direct technical assistance to users and game masters, incident resolution during sessions and live event support.',
+        },
+      },
+      stack: {
+        title: 'Tech Stack',
+        integrations_label: 'Integrations',
+        frontend: 'Next.js (App Router), React, TypeScript, Tailwind CSS, Modular CSS.',
+        backend: 'Supabase (PostgreSQL, Row Level Security, RPC/SQL Functions), Next.js API Routes.',
+        integrations: 'PayPal SDK / Webhooks, Nivel20 API, procedural dice roll module.',
+      },
+      cta: 'Explore Mea Culpa',
+      close: 'Close case',
     },
   },
 };

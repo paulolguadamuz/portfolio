@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { FiExternalLink, FiLock } from 'react-icons/fi';
+import { FiExternalLink, FiLock, FiBookOpen, FiChevronUp } from 'react-icons/fi';
 import { useLang } from '../i18n/LanguageContext';
 
-export default function ProjectCard({ project, index, onImageClick }) {
+export default function ProjectCard({ project, index, onImageClick, onShowcase, showcaseOpen }) {
   const { t } = useLang();
   const cardRef = useRef(null);
   const imageRef = useRef(null);
@@ -271,9 +271,9 @@ export default function ProjectCard({ project, index, onImageClick }) {
             ))}
           </div>
 
-          {/* Project action — visit site or private badge */}
-          <div ref={actionRef} className="mt-6">
-            {project.url ? (
+          {/* Project action — visit site, private badge, case study */}
+          <div ref={actionRef} className="flex flex-wrap items-center gap-3 mt-6">
+            {project.url && (
               <a
                 href={project.url}
                 target="_blank"
@@ -290,7 +290,9 @@ export default function ProjectCard({ project, index, onImageClick }) {
                   {t('projects.visit_site')}
                 </span>
               </a>
-            ) : project.isPrivate ? (
+            )}
+
+            {project.isPrivate && (
               <span
                 className="project-private-badge"
                 style={{
@@ -301,7 +303,34 @@ export default function ProjectCard({ project, index, onImageClick }) {
                 <FiLock className="w-3.5 h-3.5" />
                 {t('projects.private_saas')}
               </span>
-            ) : null}
+            )}
+
+            {onShowcase && (
+              <button
+                onClick={onShowcase}
+                className="project-showcase-btn"
+                style={{
+                  '--accent': project.palette.accent,
+                  '--surface': project.palette.surface,
+                }}
+                disabled={showcaseOpen}
+              >
+                <span className="project-visit-btn__glow" />
+                <span className="project-visit-btn__content">
+                  {showcaseOpen ? (
+                    <>
+                      <FiChevronUp className="w-4 h-4" />
+                      {t('projects.case_study_active')}
+                    </>
+                  ) : (
+                    <>
+                      <FiBookOpen className="w-4 h-4" />
+                      {t('projects.case_study')}
+                    </>
+                  )}
+                </span>
+              </button>
+            )}
           </div>
         </div>
       </div>
