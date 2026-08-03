@@ -1,15 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Allura&family=Great+Vibes&display=swap');
+/* Fonts are loaded from index.html via preconnect + <link> so the request starts
+   in parallel with this stylesheet instead of being discovered inside it. */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* ── CSS Custom Properties ── */
-:root {
-  --bg-from: #0A0A0B;
-  --bg-to: #0A0A0B;
-  --transition-duration: 0.3s;
-}
 
 /* ── Global Resets ── */
 * {
@@ -40,13 +34,69 @@ html.lenis, html.lenis body {
 
 body {
   font-family: 'Space Grotesk', sans-serif;
-  background: linear-gradient(135deg, var(--bg-from), var(--bg-to));
+  /* Static. The per-project palette lives on .bg-stack layers so scrolling
+     fades composited opacity instead of repainting a full-viewport gradient. */
+  background: #0A0A0B;
   color: #F5F5F0;
   overflow-x: hidden;
   min-height: 100vh;
-  transition: background var(--transition-duration) ease;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Fixed anchors sit under the sticky navbar without this */
+section[id] {
+  scroll-margin-top: 96px;
+}
+
+/* ── Project palette layers ── */
+.bg-stack {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.bg-stack__layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  /* Justified: these five layers are the only continuously scrubbed elements. */
+  will-change: opacity;
+}
+
+/* ── Keyboard focus ── */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #F5F5F0;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ── Skip link ── */
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: -120%;
+  z-index: 200;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  background: #F5F5F0;
+  color: #0A0A0B;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 1rem;
 }
 
 /* ── Typography ── */
@@ -82,21 +132,26 @@ h1, h2, h3, h4, h5, h6 {
   color: #F5F5F0;
 }
 
-/* ── WhatsApp Pulse Animation ── */
-@keyframes whatsapp-pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5);
-  }
-  70% {
-    box-shadow: 0 0 0 14px rgba(37, 211, 102, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
-  }
+/* ── WhatsApp Pulse ── transform/opacity ring instead of an animated box-shadow */
+.whatsapp-pulse::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(37, 211, 102, 0.6);
+  animation: whatsapp-ring 2s infinite ease-out;
+  pointer-events: none;
 }
 
-.whatsapp-pulse {
-  animation: whatsapp-pulse 2s infinite;
+@keyframes whatsapp-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
 }
 
 /* ── Navbar Active Link ── */
@@ -121,6 +176,70 @@ h1, h2, h3, h4, h5, h6 {
 
 .nav-link:hover::after {
   width: 100%;
+}
+
+/* ── Navbar shell ──
+   A top scrim keeps the white logo and hamburger legible when a near-white
+   project screenshot scrolls underneath the transparent bar. */
+.navbar-shell::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  /* Extends past the bar so the scrim fades out instead of ending in a hard
+     horizontal edge across a light-coloured project background. */
+  bottom: -56px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(10, 10, 11, 0.8), rgba(10, 10, 11, 0));
+  transition: opacity 0.4s ease;
+}
+
+/* Once the solid bar takes over, the scrim would only double the darkness */
+.navbar-shell--scrolled::before {
+  opacity: 0;
+}
+
+.navbar-shell--scrolled {
+  background: rgba(10, 10, 11, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ── Scroll cue ── */
+.scroll-cue__rail {
+  display: block;
+  position: relative;
+  width: 1px;
+  height: 44px;
+  overflow: hidden;
+  background: linear-gradient(to bottom, currentColor, transparent);
+}
+
+.scroll-cue__dot {
+  position: absolute;
+  top: 0;
+  left: -1px;
+  width: 3px;
+  height: 10px;
+  border-radius: 2px;
+  background: currentColor;
+  animation: scroll-cue-fall 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes scroll-cue-fall {
+  0% {
+    transform: translateY(-12px);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(44px);
+    opacity: 0;
+  }
 }
 
 /* ── Glass Effect ── */
@@ -373,10 +492,10 @@ h1, h2, h3, h4, h5, h6 {
   background: rgba(83, 163, 226, 0.02);
 }
 
-/* ── Letter span for hero animation ── */
+/* ── Letter span for hero animation ──
+   No permanent will-change: the promotion used to be left on for the session. */
 .letter-span {
   display: inline-block;
-  will-change: transform, opacity;
 }
 
 /* ── Gradient text helper ── */
@@ -449,6 +568,35 @@ h1, h2, h3, h4, h5, h6 {
   100% {
     clip-path: inset(10% 0 80% 0);
     transform: translate(1px, -2px);
+  }
+}
+
+/* ── Reduced motion ──
+   GSAP animations are gated separately via gsap.matchMedia(); this covers the
+   purely-CSS motion: infinite loops, long transitions and the glitch layers. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .whatsapp-pulse::after,
+  .scroll-cue__dot,
+  .glitch-text::before,
+  .glitch-text::after {
+    display: none;
+  }
+
+  .project-image-frame:hover img,
+  .project-visit-btn:hover,
+  .project-showcase-btn:hover:not(:disabled),
+  .meaculpa-feature-card:hover,
+  .novasite-feature-card:hover {
+    transform: none;
   }
 }
 

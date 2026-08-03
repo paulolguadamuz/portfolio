@@ -3,8 +3,11 @@ const translations = {
     // Navbar
     nav: {
       home: 'Inicio',
+      skills: 'Skills',
       projects: 'Proyectos',
       contact: 'Contacto',
+      aria_label: 'Navegación principal',
+      toggle_menu: 'Abrir o cerrar el menú',
     },
 
     // Hero
@@ -13,6 +16,7 @@ const translations = {
       bio: 'Soy un ingeniero en tecnologías de información con experiencia en desarrollo web, diseño de interfaces, ciberseguridad y soluciones tecnológicas. Me especializo en crear soluciones eficientes y escalables para empresas y organizaciones.',
       cta_projects: 'Ver proyectos',
       cta_contact: 'Contacto',
+      scroll_cue: 'Desliza',
     },
 
     // Projects
@@ -225,8 +229,11 @@ const translations = {
     // Navbar
     nav: {
       home: 'Home',
+      skills: 'Skills',
       projects: 'Projects',
       contact: 'Contact',
+      aria_label: 'Main navigation',
+      toggle_menu: 'Toggle menu',
     },
 
     // Hero
@@ -235,6 +242,7 @@ const translations = {
       bio: 'I am an information technology engineer with experience in web development, interface design, cybersecurity and technology solutions. I specialize in creating efficient and scalable solutions for companies and organizations.',
       cta_projects: 'View projects',
       cta_contact: 'Contact',
+      scroll_cue: 'Scroll',
     },
 
     // Projects

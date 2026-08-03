@@ -1,107 +1,113 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
+import { SplitText } from 'gsap/SplitText';
 import { useLang } from '../i18n/LanguageContext';
+import { FULL_MOTION, scrollToSection } from '../lib/motion';
 
-export default function Hero({ lenisRef }) {
+gsap.registerPlugin(SplitText);
+
+export default function Hero() {
   const { t } = useLang();
   const sectionRef = useRef(null);
   const nameRef = useRef(null);
   const subtitleRef = useRef(null);
   const bioRef = useRef(null);
+  const ctaRef = useRef(null);
+  const cueRef = useRef(null);
 
   useEffect(() => {
-    let glitchInterval;
-    const nameEl = nameRef.current;
+    const mm = gsap.matchMedia();
+    let cancelled = false;
 
-    const triggerGlitch = () => {
-      if (!nameEl) return;
-      const glitchTl = gsap.timeline({
-        onStart: () => nameEl.classList.add('glitching'),
-        onComplete: () => {
-          nameEl.classList.remove('glitching');
-          gsap.set(nameEl, { x: 0, skewX: 0 });
-        }
+    mm.add(FULL_MOTION, () => {
+      const nameEl = nameRef.current;
+      const splits = [];
+      let glitchInterval;
+      let observer;
+      let heroVisible = true;
+
+      const triggerGlitch = () => {
+        if (!nameEl || !heroVisible) return;
+        nameEl.classList.add('glitching');
+        gsap
+          .timeline({ onComplete: () => nameEl.classList.remove('glitching') })
+          .to(nameEl, { x: -3, skewX: 10, duration: 0.05 })
+          .to(nameEl, { x: 3, skewX: -8, duration: 0.05 })
+          .to(nameEl, { x: 0, skewX: 0, duration: 0.05 });
+      };
+
+      // Line splitting depends on the final font metrics, so wait for the web
+      // fonts before measuring — otherwise lines break against the fallback.
+      document.fonts.ready.then(() => {
+        if (cancelled) return;
+
+        const nameSplit = SplitText.create(nameEl, {
+          type: 'chars,words',
+          charsClass: 'letter-span',
+        });
+        const subtitleSplit = SplitText.create(subtitleRef.current, {
+          type: 'lines',
+          mask: 'lines',
+        });
+        const bioSplit = SplitText.create(bioRef.current, {
+          type: 'lines',
+          mask: 'lines',
+        });
+        splits.push(nameSplit, subtitleSplit, bioSplit);
+
+        const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+
+        tl.from(nameSplit.chars, {
+          opacity: 0,
+          scale: 0.8,
+          yPercent: 12,
+          stagger: { each: 0.045, from: 'center' },
+          duration: 0.7,
+          ease: 'power2.out',
+        })
+          .from(
+            subtitleSplit.lines,
+            { yPercent: 110, duration: 1, stagger: 0.12, ease: 'expo.out' },
+            '-=0.7'
+          )
+          .from(
+            bioSplit.lines,
+            { yPercent: 110, duration: 1, stagger: 0.08, ease: 'expo.out' },
+            '-=0.85'
+          )
+          .from(
+            [ctaRef.current, cueRef.current],
+            { opacity: 0, y: 20, duration: 0.9, stagger: 0.1, ease: 'expo.out' },
+            '-=0.7'
+          )
+          .add(triggerGlitch, '+=0.2');
       });
 
-      glitchTl.to(nameEl, { x: -3, skewX: 10, duration: 0.05 })
-        .to(nameEl, { x: 3, skewX: -8, duration: 0.05 })
-        .to(nameEl, { x: 0, skewX: 0, duration: 0.05 });
-    };
+      // Only glitch while the hero is actually on screen — it used to run
+      // every 4.5s for the whole session, off-screen included.
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          heroVisible = entry.isIntersecting;
+        },
+        { threshold: 0 }
+      );
+      observer.observe(sectionRef.current);
 
-    const ctx = gsap.context(() => {
-      // Split name into words, then letters per word (prevents mid-word line breaks)
-      const text = nameEl.textContent;
-      const words = text.split(' ');
+      glitchInterval = setInterval(triggerGlitch, 4500);
+      nameEl.addEventListener('mouseenter', triggerGlitch);
 
-      // High-end Spotlight Reveal animation setup for letters
-      nameEl.innerHTML = words
-        .map(
-          (word) =>
-            `<span style="display:inline-block; white-space:nowrap;">${word
-              .split('')
-              .map(
-                (char) =>
-                  `<span class="letter-span" style="display:inline-block; will-change: transform, opacity, filter;">${char}</span>`
-              )
-              .join('')}</span>`
-        )
-        .join(' ');
-
-      const letters = nameEl.querySelectorAll('.letter-span');
-
-      const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
-
-      tl.from(letters, {
-        opacity: 0.1,
-        scale: 0.8,
-        filter: 'blur(4px)',
-        stagger: { each: 0.06, from: 'center' },
-        duration: 0.6,
-        ease: 'power2.out',
-      })
-        .from(
-          subtitleRef.current,
-          {
-            opacity: 0,
-            y: 20,
-            filter: 'blur(8px)',
-            duration: 1.2,
-            ease: 'expo.out',
-          },
-          '-=0.8'
-        )
-        .from(
-          bioRef.current,
-          {
-            opacity: 0,
-            y: 20,
-            filter: 'blur(8px)',
-            duration: 1.2,
-            ease: 'expo.out',
-          },
-          '-=1.0'
-        );
-
-      // Trigger first glitch slightly after entry animation finishes
-      tl.add(() => {
-        triggerGlitch();
-      }, '+=0.2');
+      return () => {
+        clearInterval(glitchInterval);
+        observer?.disconnect();
+        nameEl.removeEventListener('mouseenter', triggerGlitch);
+        splits.forEach((s) => s.revert());
+        nameEl.classList.remove('glitching');
+      };
     }, sectionRef);
 
-    // Set up periodic glitch trigger (every 4.5 seconds)
-    glitchInterval = setInterval(triggerGlitch, 4500);
-
-    // Trigger glitch on hover
-    if (nameEl) {
-      nameEl.addEventListener('mouseenter', triggerGlitch);
-    }
-
     return () => {
-      ctx.revert();
-      clearInterval(glitchInterval);
-      if (nameEl) {
-        nameEl.removeEventListener('mouseenter', triggerGlitch);
-      }
+      cancelled = true;
+      mm.revert();
     };
   }, []);
 
@@ -135,15 +141,12 @@ export default function Hero({ lenisRef }) {
             {t('hero.bio')}
           </p>
 
-          <div className="flex gap-4 mt-6">
+          <div ref={ctaRef} className="flex gap-4 mt-6">
             <a
               href="#projects"
               onClick={(e) => {
                 e.preventDefault();
-                const target = document.querySelector('#projects');
-                if (target && lenisRef?.current) {
-                  lenisRef.current.scrollTo(target, { offset: -80, duration: 1.8 });
-                }
+                scrollToSection('#projects', { duration: 1.8 });
               }}
               className="font-body text-sm uppercase tracking-widest px-8 py-4 border border-light/30 rounded-full text-light hover:bg-light hover:text-dark transition-all duration-300 backdrop-blur-md bg-black/20"
             >
@@ -153,10 +156,7 @@ export default function Hero({ lenisRef }) {
               href="#contact"
               onClick={(e) => {
                 e.preventDefault();
-                const target = document.querySelector('#contact');
-                if (target && lenisRef?.current) {
-                  lenisRef.current.scrollTo(target, { offset: -80, duration: 1.8 });
-                }
+                scrollToSection('#contact', { duration: 1.8 });
               }}
               className="font-body text-sm uppercase tracking-widest px-8 py-4 bg-light text-dark rounded-full hover:bg-light/90 transition-all duration-300 shadow-xl"
             >
@@ -165,6 +165,25 @@ export default function Hero({ lenisRef }) {
           </div>
         </div>
       </div>
+
+      {/* Scroll cue — the page is ~8000px tall and nothing hinted at that */}
+      <a
+        ref={cueRef}
+        href="#skills"
+        onClick={(e) => {
+          e.preventDefault();
+          scrollToSection('#skills');
+        }}
+        aria-label={t('hero.scroll_cue')}
+        className="scroll-cue absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hidden sm:flex flex-col items-center gap-3 text-light/40 hover:text-light/80 transition-colors"
+      >
+        <span className="font-body text-[0.65rem] uppercase tracking-[0.3em]">
+          {t('hero.scroll_cue')}
+        </span>
+        <span className="scroll-cue__rail" aria-hidden="true">
+          <span className="scroll-cue__dot" />
+        </span>
+      </a>
     </section>
   );
 }

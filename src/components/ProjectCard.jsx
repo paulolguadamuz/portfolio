@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { FiExternalLink, FiLock, FiBookOpen, FiChevronUp } from 'react-icons/fi';
 import { useLang } from '../i18n/LanguageContext';
+import { FULL_MOTION } from '../lib/motion';
 
 export default function ProjectCard({ project, index, onImageClick, onShowcase, showcaseOpen }) {
   const { t } = useLang();
@@ -20,7 +21,9 @@ export default function ProjectCard({ project, index, onImageClick, onShowcase, 
   const description = t(`projects.descriptions.${project.id}`) || project.description;
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
+    const mm = gsap.matchMedia();
+
+    mm.add(FULL_MOTION, () => {
       // Main image premium parallax reveal
       gsap.fromTo(
         imageRef.current,
@@ -79,12 +82,11 @@ export default function ProjectCard({ project, index, onImageClick, onShowcase, 
       // Title reveal
       gsap.fromTo(
         titleRef.current,
-        { opacity: 0, y: 50, rotateX: -30, filter: 'blur(10px)' },
+        { opacity: 0, y: 50, rotateX: -30 },
         {
           opacity: 1,
           y: 0,
           rotateX: 0,
-          filter: 'blur(0px)',
           duration: 1.2,
           ease: 'expo.out',
           scrollTrigger: {
@@ -98,11 +100,10 @@ export default function ProjectCard({ project, index, onImageClick, onShowcase, 
       // Description reveal
       gsap.fromTo(
         descRef.current,
-        { opacity: 0, y: 30, filter: 'blur(8px)' },
+        { opacity: 0, y: 30 },
         {
           opacity: 1,
           y: 0,
-          filter: 'blur(0px)',
           duration: 1.2,
           delay: 0.1,
           ease: 'expo.out',
@@ -119,12 +120,11 @@ export default function ProjectCard({ project, index, onImageClick, onShowcase, 
       if (tagEls?.length) {
         gsap.fromTo(
           tagEls,
-          { opacity: 0, y: 20, scale: 0.9, filter: 'blur(4px)' },
+          { opacity: 0, y: 20, scale: 0.9 },
           {
             opacity: 1,
             y: 0,
             scale: 1,
-            filter: 'blur(0px)',
             duration: 0.8,
             stagger: 0.05,
             ease: 'expo.out',
@@ -141,12 +141,11 @@ export default function ProjectCard({ project, index, onImageClick, onShowcase, 
       if (actionRef.current) {
         gsap.fromTo(
           actionRef.current,
-          { opacity: 0, y: 24, scale: 0.92, filter: 'blur(6px)' },
+          { opacity: 0, y: 24, scale: 0.92 },
           {
             opacity: 1,
             y: 0,
             scale: 1,
-            filter: 'blur(0px)',
             duration: 1,
             delay: 0.15,
             ease: 'expo.out',
@@ -160,7 +159,7 @@ export default function ProjectCard({ project, index, onImageClick, onShowcase, 
       }
     }, cardRef);
 
-    return () => ctx.revert();
+    return () => mm.revert();
   }, [isEven]);
 
   // Translate tag if a translation exists, otherwise keep the original
@@ -175,13 +174,9 @@ export default function ProjectCard({ project, index, onImageClick, onShowcase, 
       ref={cardRef}
       className="max-w-7xl mx-auto px-6 lg:px-8 w-full"
     >
-      <div
-        className={`grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center ${
-          isEven ? '' : 'lg:[direction:rtl]'
-        }`}
-      >
-        {/* Images column */}
-        <div className="flex flex-col gap-4 lg:[direction:ltr]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+        {/* Images column — swaps sides on desktop via order, not direction:rtl */}
+        <div className={`flex flex-col gap-4 ${isEven ? '' : 'lg:order-2'}`}>
           {/* Main image */}
           <div
             ref={imageRef}
@@ -193,8 +188,12 @@ export default function ProjectCard({ project, index, onImageClick, onShowcase, 
             <img
               src={project.image}
               alt={project.title}
+              width="1600"
+              height="900"
               className="w-full h-auto aspect-video object-cover cursor-pointer hover:scale-105 transition-transform duration-700"
-              loading="lazy"
+              loading={index === 0 ? 'eager' : 'lazy'}
+              fetchpriority={index === 0 ? 'high' : undefined}
+              decoding="async"
               onClick={() => onImageClick(project.image)}
             />
           </div>
@@ -213,8 +212,11 @@ export default function ProjectCard({ project, index, onImageClick, onShowcase, 
                   <img
                     src={img}
                     alt={`${project.title} - ${t('projects.view')} ${i + 1}`}
+                    width="1600"
+                    height="900"
                     className="w-full h-auto aspect-video object-cover cursor-pointer hover:scale-105 transition-transform duration-700"
                     loading="lazy"
+                    decoding="async"
                     onClick={() => onImageClick(img)}
                   />
                 </div>
@@ -224,10 +226,11 @@ export default function ProjectCard({ project, index, onImageClick, onShowcase, 
         </div>
 
         {/* Text column */}
-        <div className="flex flex-col gap-5 lg:[direction:ltr]">
+        <div className={`flex flex-col gap-5 ${isEven ? '' : 'lg:order-1'}`}>
           {/* Project number */}
           <span
-            className="font-display font-bold text-7xl lg:text-8xl opacity-10 leading-none"
+            aria-hidden="true"
+            className="font-display font-bold text-7xl lg:text-8xl opacity-30 leading-none"
             style={{ color: project.palette.accent }}
           >
             {String(project.id).padStart(2, '0')}

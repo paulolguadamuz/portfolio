@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { SplitText } from 'gsap/SplitText';
+import { FULL_MOTION } from '../lib/motion';
 import {
   SiDotnet,
   SiReact,
@@ -64,16 +66,19 @@ export default function Skills() {
   const nodesRef = useRef([]);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
+    const mm = gsap.matchMedia();
+
+    mm.add(FULL_MOTION, () => {
+      const splits = [];
+
       // Heading reveal
       gsap.fromTo(
         headingRef.current,
-        { opacity: 0, y: 50, rotateX: -20, filter: 'blur(10px)' },
+        { opacity: 0, y: 50, rotateX: -20 },
         {
           opacity: 1,
           y: 0,
           rotateX: 0,
-          filter: 'blur(0px)',
           duration: 1.2,
           ease: 'expo.out',
           scrollTrigger: {
@@ -105,9 +110,13 @@ export default function Skills() {
         if (!node) return;
 
         const dot = node.querySelector('.timeline-dot');
-        const chars = node.querySelectorAll('.tech-char');
+        const nameEl = node.querySelector('.timeline-name');
         const desc = node.querySelector('.timeline-desc');
         const line = node.querySelector('.timeline-accent-line');
+
+        const nameSplit = SplitText.create(nameEl, { type: 'chars' });
+        splits.push(nameSplit);
+        const chars = nameSplit.chars;
 
         const tl = gsap.timeline({
           scrollTrigger: {
@@ -138,13 +147,13 @@ export default function Skills() {
           '-=0.3'
         );
 
-        // Ink Bleed animation for description
+        // Description settles in
         tl.fromTo(
           desc,
-          { filter: 'blur(20px)', opacity: 0, scale: 0.9 },
+          { opacity: 0, y: 14, scale: 0.96 },
           {
-            filter: 'blur(0px)',
             opacity: 1,
+            y: 0,
             scale: 1,
             duration: 1,
             ease: 'power2.out',
@@ -160,9 +169,11 @@ export default function Skills() {
           '-=0.2'
         );
       });
+
+      return () => splits.forEach((s) => s.revert());
     }, sectionRef);
 
-    return () => ctx.revert();
+    return () => mm.revert();
   }, []);
 
   return (
@@ -195,7 +206,7 @@ export default function Skills() {
         />
 
         {/* Nodes */}
-        <div className="flex flex-col gap-16 sm:gap-20">
+        <div className="flex flex-col gap-10 sm:gap-12">
           {SKILLS.map((skill, i) => {
             const Icon = skill.icon;
             const isLeft = i % 2 === 0;
@@ -238,26 +249,12 @@ export default function Skills() {
                     className={`flex items-center gap-3 mb-2 ${isLeft ? 'sm:flex-row-reverse' : ''
                       }`}
                   >
-                    <h3
-                      className="font-bold text-xl sm:text-2xl tracking-tight text-light select-none"
-                      style={{ fontFamily: 'monospace' }}
-                    >
-                      {techName.split('').map((char, charIdx) => (
-                        <span
-                          key={charIdx}
-                          className="tech-char inline-block"
-                          style={{ display: 'inline-block' }}
-                        >
-                          {char === ' ' ? '\u00A0' : char}
-                        </span>
-                      ))}
+                    <h3 className="timeline-name font-display font-bold text-xl sm:text-2xl tracking-tight text-light">
+                      {techName}
                     </h3>
                   </div>
 
-                  <p
-                    className="timeline-desc text-sm sm:text-base text-light/50 leading-relaxed select-none"
-                    style={{ fontFamily: 'monospace' }}
-                  >
+                  <p className="timeline-desc font-body text-sm sm:text-base text-light/60 leading-relaxed">
                     {techDesc}
                   </p>
 

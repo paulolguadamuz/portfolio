@@ -43,8 +43,6 @@ export default function Footer() {
             <h3 className="font-display font-bold text-2xl text-light tracking-tight">
               Paulo Jimenez Guadamuz
             </h3>
-            <p className="font-body text-sm text-light/40 leading-relaxed">
-            </p>
             <a
               href="https://github.com/paulolguadamuz"
               target="_blank"
@@ -100,7 +98,7 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="mt-12 pt-8 border-t border-light/5 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="font-body text-xs text-light/30">
+          <p className="font-body text-xs text-light/60">
             © {new Date().getFullYear()} Paulo Jimenez Guadamuz. {t('footer.rights')}
           </p>
         </div>

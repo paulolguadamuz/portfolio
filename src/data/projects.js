@@ -4,11 +4,11 @@ export const projects = [
     title: "Novasite",
     description:
       "Sitio web corporativo para un equipo de desarrollo de software, diseñado para presentar proyectos, mostrar al equipo y captar clientes. Construido con React, JavaScript y Lenis para una experiencia de scroll fluida y profesional.",
-    image: "/projects/NovasiteHomeScreen.png",
+    image: "/projects/NovasiteHomeScreen.webp",
     gallery: [
-      "/projects/NovasiteProjects.png",
-      "/projects/NovasiteMembers.png",
-      "/projects/NovasiteContact.png",
+      "/projects/NovasiteProjects.webp",
+      "/projects/NovasiteMembers.webp",
+      "/projects/NovasiteContact.webp",
     ],
     tags: ["Next.js", "TypeScript", "Tailwind CSS", "GSAP"],
     url: "https://www.novacr.site",
@@ -24,10 +24,10 @@ export const projects = [
     title: "Bougainvillea",
     description:
       "E-commerce de café de especialidad con catálogo interactivo, carrito moderno y pasarelas de pago integradas (PayPal y SINPE). Incluye secciones de about, contacto y una experiencia de compra enfocada en transmitir la identidad artesanal de la marca.",
-    image: "/projects/BougainVilleaHomescreen.png",
+    image: "/projects/BougainVilleaHomescreen.webp",
     gallery: [
-      "/projects/BougainVilleaCatalog.png",
-      "/projects/BougainVilleaContactBurgerMenu.png",
+      "/projects/BougainVilleaCatalog.webp",
+      "/projects/BougainVilleaContactBurgerMenu.webp",
     ],
     tags: ["E-commerce", "PayPal", "SINPE", "Catálogo"],
     url: "https://bougan-villea.vercel.app/",
@@ -43,11 +43,11 @@ export const projects = [
     title: "MantenTools",
     description:
       "Plataforma de gestión de mantenimiento industrial para pequeñas fábricas. Permite a los operarios reportar fallas escaneando un QR en cada máquina y genera recordatorios automáticos de revisiones preventivas, eliminando el caos de WhatsApp y minimizando paros en la línea de producción.",
-    image: "/projects/mantentoolsDashBoard.png",
+    image: "/projects/mantentoolsDashBoard.webp",
     gallery: [
-      "/projects/mantentoolsGraphs.png",
-      "/projects/mantentoolsUsers.png",
-      "/projects/MantentoolsCheck.png",
+      "/projects/mantentoolsGraphs.webp",
+      "/projects/mantentoolsUsers.webp",
+      "/projects/MantentoolsCheck.webp",
     ],
     tags: ["QR", "Mantenimiento", "Industrial", "Automatización"],
     isPrivate: true,
@@ -63,10 +63,10 @@ export const projects = [
     title: "Mea Culpa",
     description:
       "Plataforma online del Juego de mesa estilo Calabozos y Dragones (D&D), con perfiles de personaje, inventario interactivo, compendio de conjuros, comercio en tiempo real, gremios y pasarela de pagos PayPal. Construida con Next.js, TypeScript, Supabase (PostgreSQL + RLS) y Tailwind CSS.",
-    image: "/projects/HomepageMeaCulpa.png",
+    image: "/projects/HomepageMeaCulpa.webp",
     gallery: [
-      "/projects/PersonajeMeaCulpa.png",
-      "/projects/ConjurosMeaCulpa.png",
+      "/projects/PersonajeMeaCulpa.webp",
+      "/projects/ConjurosMeaCulpa.webp",
     ],
     tags: ["Next.js", "TypeScript", "Supabase", "PayPal"],
     url: "https://www.meaculpadnd.com",

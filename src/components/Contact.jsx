@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useLang } from '../i18n/LanguageContext';
+import { FULL_MOTION } from '../lib/motion';
 
 /* ── Sanitization & Validation helpers ── */
 
@@ -109,7 +110,9 @@ export default function Contact() {
   };
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
+    const mm = gsap.matchMedia();
+
+    mm.add(FULL_MOTION, () => {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -121,8 +124,8 @@ export default function Contact() {
 
       tl.fromTo(
         headingRef.current,
-        { opacity: 0, y: 50, rotateX: -20, filter: 'blur(10px)' },
-        { opacity: 1, y: 0, rotateX: 0, filter: 'blur(0px)', duration: 1.2 }
+        { opacity: 0, y: 50, rotateX: -20 },
+        { opacity: 1, y: 0, rotateX: 0, duration: 1.2 }
       )
         .fromTo(
           subtextRef.current,
@@ -132,20 +135,28 @@ export default function Contact() {
         )
         .fromTo(
           formRef.current,
-          { opacity: 0, y: 40, scale: 0.98, filter: 'blur(10px)' },
-          { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)', duration: 1.2 },
+          { opacity: 0, y: 40, scale: 0.98 },
+          { opacity: 1, y: 0, scale: 1, duration: 1.2 },
           '-=0.8'
         );
     }, sectionRef);
 
-    return () => ctx.revert();
+    return () => mm.revert();
   }, []);
 
-  /* ── Inline error helper ── */
+  /* ── Inline error helper — linked to its input via aria-describedby ── */
   const fieldError = (field) =>
     errors[field] ? (
-      <span className="font-body text-xs text-red-400 mt-1">{errors[field]}</span>
+      <span id={`contact-${field}-error`} className="font-body text-xs text-red-400 mt-1">
+        {errors[field]}
+      </span>
     ) : null;
+
+  /* ── Shared a11y wiring for an errored field ── */
+  const errorProps = (field) =>
+    errors[field]
+      ? { 'aria-invalid': true, 'aria-describedby': `contact-${field}-error` }
+      : {};
 
   return (
     <section
@@ -184,7 +195,7 @@ export default function Contact() {
             ref={formRef}
             className="glass rounded-2xl p-8 sm:p-10 text-left flex flex-col gap-6"
             onSubmit={handleSubmit}
-            autoComplete="off"
+            noValidate
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="flex flex-col gap-2">
@@ -203,8 +214,9 @@ export default function Contact() {
                   className={`form-input bg-white/5 border rounded-xl px-4 py-3 text-light font-body placeholder:text-light/25 transition-colors ${errors.name ? 'border-red-400/60' : 'border-white/10'
                     }`}
                   disabled={status.state === 'loading'}
-                  autoComplete="off"
+                  autoComplete="name"
                   maxLength={LIMITS.name}
+                  {...errorProps('name')}
                 />
                 {fieldError('name')}
               </div>
@@ -218,15 +230,17 @@ export default function Contact() {
                 </label>
                 <input
                   id="contact-email"
-                  type="text"
+                  type="email"
+                  inputMode="email"
                   value={formData.email}
                   onChange={handleChange}
                   placeholder={t('contact.placeholder_email')}
                   className={`form-input bg-white/5 border rounded-xl px-4 py-3 text-light font-body placeholder:text-light/25 transition-colors ${errors.email ? 'border-red-400/60' : 'border-white/10'
                     }`}
                   disabled={status.state === 'loading'}
-                  autoComplete="off"
+                  autoComplete="email"
                   maxLength={LIMITS.email}
+                  {...errorProps('email')}
                 />
                 {fieldError('email')}
               </div>
@@ -248,8 +262,8 @@ export default function Contact() {
                 className={`form-input bg-white/5 border rounded-xl px-4 py-3 text-light font-body placeholder:text-light/25 resize-none transition-colors ${errors.message ? 'border-red-400/60' : 'border-white/10'
                   }`}
                 disabled={status.state === 'loading'}
-                autoComplete="off"
                 maxLength={LIMITS.message}
+                {...errorProps('message')}
               />
               <div className="flex justify-between items-center">
                 {fieldError('message')}
@@ -267,11 +281,16 @@ export default function Contact() {
               >
                 {status.state === 'loading' ? t('contact.sending') : t('contact.submit')}
               </button>
-              {status.message && (
-                <p className={`font-body text-sm ${status.state === 'error' ? 'text-red-400' : 'text-green-400'}`}>
-                  {status.message}
-                </p>
-              )}
+              {/* Announced to screen readers — the form used to change silently */}
+              <p
+                role="status"
+                aria-live="polite"
+                className={`font-body text-sm ${
+                  status.state === 'error' ? 'text-red-400' : 'text-green-400'
+                }`}
+              >
+                {status.message}
+              </p>
             </div>
           </form>
         </div>
