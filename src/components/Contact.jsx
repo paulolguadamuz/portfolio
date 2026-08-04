@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useLang } from '../i18n/LanguageContext';
-import { FULL_MOTION } from '../lib/motion';
+import { FULL_MOTION, FULL_MOTION_FINE, makeMagnetic } from '../lib/motion';
 
 /* ── Sanitization & Validation helpers ── */
 
@@ -122,11 +122,12 @@ export default function Contact() {
         defaults: { ease: 'power3.out' },
       });
 
-      tl.fromTo(
-        headingRef.current,
-        { opacity: 0, y: 50, rotateX: -20 },
-        { opacity: 1, y: 0, rotateX: 0, duration: 1.2 }
-      )
+      tl.from('.contact__line', {
+        yPercent: 115,
+        duration: 1.1,
+        stagger: 0.1,
+        ease: 'expo.out',
+      })
         .fromTo(
           subtextRef.current,
           { opacity: 0, y: 20 },
@@ -135,10 +136,19 @@ export default function Contact() {
         )
         .fromTo(
           formRef.current,
-          { opacity: 0, y: 40, scale: 0.98 },
-          { opacity: 1, y: 0, scale: 1, duration: 1.2 },
-          '-=0.8'
-        );
+          { opacity: 0, y: 40 },
+          { opacity: 1, y: 0, duration: 1.2 },
+          '-=0.85'
+        )
+        .from('.contact__direct li', { opacity: 0, y: 16, stagger: 0.08, duration: 0.7 }, '-=0.9');
+    }, sectionRef);
+
+    // Magnetic submit
+    mm.add(FULL_MOTION_FINE, () => {
+      const cleanup = makeMagnetic(sectionRef.current.querySelector('.contact__submit'), {
+        strength: 0.25,
+      });
+      return () => cleanup();
     }, sectionRef);
 
     return () => mm.revert();
@@ -159,41 +169,37 @@ export default function Contact() {
       : {};
 
   return (
-    <section
-      id="contact"
-      ref={sectionRef}
-      className="relative py-32 overflow-hidden"
-    >
-      {/* Decorative blurred orb */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-light/[0.02] blur-3xl pointer-events-none" />
+    <section id="contact" ref={sectionRef} className="contact">
+      <div className="contact__inner">
+        {/* Full-bleed typographic statement */}
+        <h2 ref={headingRef} className="contact__heading font-display">
+          <span className="contact__line">{t('contact.heading_1')}</span>
+          <span className="contact__line contact__line--muted">{t('contact.heading_2')}</span>
+        </h2>
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-
-          {/* Left side: Typography & Info */}
-          <div className="flex flex-col gap-8 text-left">
-            <h2
-              ref={headingRef}
-              className="font-display font-extrabold text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] tracking-tight leading-[1.1] text-light"
-            >
-              {t('contact.heading_1')} <br className="hidden lg:block" />
-              <span className="text-light/50">
-                {t('contact.heading_2')}
-              </span>
-            </h2>
-
-            <p
-              ref={subtextRef}
-              className="font-body text-lg sm:text-xl text-light/50 max-w-lg leading-relaxed"
-            >
+        <div className="contact__grid">
+          <div className="contact__aside">
+            <p ref={subtextRef} className="contact__subtext font-body">
               {t('contact.subtext')}
             </p>
+
+            <ul className="contact__direct font-body">
+              <li>
+                <a href="mailto:paujigua@gmail.com" data-cursor="link">
+                  paujigua@gmail.com
+                </a>
+              </li>
+              <li>
+                <a href="tel:+50687397574" data-cursor="link">
+                  +506 8739 7574
+                </a>
+              </li>
+            </ul>
           </div>
 
-          {/* Right side: Contact Form */}
           <form
             ref={formRef}
-            className="glass rounded-2xl p-8 sm:p-10 text-left flex flex-col gap-6"
+            className="contact__form glass"
             onSubmit={handleSubmit}
             noValidate
           >
@@ -277,7 +283,8 @@ export default function Contact() {
               <button
                 type="submit"
                 disabled={status.state === 'loading'}
-                className="font-body text-sm uppercase tracking-widest px-8 py-3 bg-light text-dark rounded-full hover:bg-light/90 hover:scale-105 transition-all duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 w-full sm:w-auto"
+                data-cursor="link"
+                className="contact__submit font-body text-sm uppercase tracking-widest px-8 py-3 bg-light text-dark rounded-full hover:bg-light/90 transition-colors duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
               >
                 {status.state === 'loading' ? t('contact.sending') : t('contact.submit')}
               </button>

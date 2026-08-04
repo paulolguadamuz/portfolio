@@ -11,8 +11,9 @@ export default function Navbar() {
 
   const navItems = [
     { label: t('nav.home'), href: '#hero' },
-    { label: t('nav.skills'), href: '#skills' },
     { label: t('nav.projects'), href: '#projects' },
+    { label: t('nav.about'), href: '#about' },
+    { label: t('nav.skills'), href: '#skills' },
     { label: t('nav.contact'), href: '#contact' },
   ];
 
@@ -75,6 +76,7 @@ export default function Navbar() {
                 <a
                   href={item.href}
                   onClick={(e) => handleNavClick(e, item.href)}
+                  data-cursor="link"
                   aria-current={activeSection === item.href.slice(1) ? 'true' : undefined}
                   className={`nav-link font-body text-sm tracking-wide uppercase transition-opacity ${
                     activeSection === item.href.slice(1)
@@ -132,6 +134,7 @@ export default function Navbar() {
               <a
                 href={item.href}
                 onClick={(e) => handleNavClick(e, item.href)}
+                data-cursor="link"
                 tabIndex={menuOpen ? 0 : -1}
                 className={`nav-link font-body text-sm tracking-wide uppercase block py-2 ${
                   activeSection === item.href.slice(1) ? 'active text-light' : 'text-light/70'

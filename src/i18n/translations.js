@@ -4,6 +4,7 @@ const translations = {
     nav: {
       home: 'Inicio',
       skills: 'Skills',
+      about: 'Sobre mí',
       projects: 'Proyectos',
       contact: 'Contacto',
       aria_label: 'Navegación principal',
@@ -17,10 +18,55 @@ const translations = {
       cta_projects: 'Ver proyectos',
       cta_contact: 'Contacto',
       scroll_cue: 'Desliza',
+      meta_based: 'Ubicación',
+      meta_projects: 'Proyectos',
+      meta_focus: 'Enfoque',
+      meta_focus_value: 'Web · UI/UX · Backend',
+    },
+
+    // Work (índice de proyectos)
+    work: {
+      title: 'Trabajo seleccionado',
+      open: 'Abrir',
+      close: 'Cerrar',
+      hint: 'Selecciona un proyecto para ver el detalle',
+    },
+
+    // Sobre mí
+    about: {
+      label: 'Sobre mí',
+      heading_1: 'Construyo',
+      heading_2: 'productos que',
+      heading_3: 'se usan.',
+      meta_role: 'Rol',
+      meta_role_value: 'Ingeniero TI · Desarrollador Web · UI/UX',
+      meta_location: 'Ubicación',
+      meta_location_value: 'Costa Rica',
+      meta_email: 'Email',
+      meta_stack: 'Stack principal',
+      meta_stack_value: '.NET · React · Next.js · TypeScript · PostgreSQL',
+      photo_alt: 'Retrato de Paulo Jimenez Guadamuz',
+    },
+
+    // Proceso
+    // ⚠️ TEXTO PROVISIONAL — Paulo debe reescribir estos 4 pasos con su método real.
+    // No hay ninguna descripción de proceso en el repositorio, así que esto es
+    // una estructura de ejemplo, no una afirmación sobre cómo trabaja.
+    process: {
+      label: 'Proceso',
+      heading: 'Cómo trabajo',
+      note: 'Texto provisional — pendiente de redacción.',
+      steps: {
+        1: { title: 'Entender', desc: 'Texto provisional: describe aquí cómo levantas requisitos y defines el problema antes de escribir código.' },
+        2: { title: 'Diseñar', desc: 'Texto provisional: describe aquí cómo pasas del problema a una interfaz y una arquitectura concretas.' },
+        3: { title: 'Construir', desc: 'Texto provisional: describe aquí tu forma de desarrollar, tus herramientas y tu control de calidad.' },
+        4: { title: 'Entregar', desc: 'Texto provisional: describe aquí cómo despliegas, mides y das seguimiento después de la entrega.' },
+      },
     },
 
     // Projects
     projects: {
+      label: 'Trabajo seleccionado',
       title: 'Proyectos',
       cta_github: 'Ver más proyectos en GitHub',
       close: 'Cerrar',
@@ -230,6 +276,7 @@ const translations = {
     nav: {
       home: 'Home',
       skills: 'Skills',
+      about: 'About',
       projects: 'Projects',
       contact: 'Contact',
       aria_label: 'Main navigation',
@@ -243,10 +290,55 @@ const translations = {
       cta_projects: 'View projects',
       cta_contact: 'Contact',
       scroll_cue: 'Scroll',
+      meta_based: 'Based in',
+      meta_projects: 'Projects',
+      meta_focus: 'Focus',
+      meta_focus_value: 'Web · UI/UX · Backend',
+    },
+
+    // Work (project index)
+    work: {
+      title: 'Selected work',
+      open: 'Open',
+      close: 'Close',
+      hint: 'Select a project to see the detail',
+    },
+
+    // About
+    about: {
+      label: 'About',
+      heading_1: 'I build',
+      heading_2: 'products that',
+      heading_3: 'get used.',
+      meta_role: 'Role',
+      meta_role_value: 'IT Engineer · Web Developer · UI/UX',
+      meta_location: 'Based in',
+      meta_location_value: 'Costa Rica',
+      meta_email: 'Email',
+      meta_stack: 'Core stack',
+      meta_stack_value: '.NET · React · Next.js · TypeScript · PostgreSQL',
+      photo_alt: 'Portrait of Paulo Jimenez Guadamuz',
+    },
+
+    // Process
+    // ⚠️ PLACEHOLDER COPY — Paulo must rewrite these 4 steps with his real method.
+    // Nothing in the repository describes a process, so this is example
+    // structure, not a claim about how he works.
+    process: {
+      label: 'Process',
+      heading: 'How I work',
+      note: 'Placeholder copy — pending rewrite.',
+      steps: {
+        1: { title: 'Understand', desc: 'Placeholder: describe here how you gather requirements and frame the problem before writing any code.' },
+        2: { title: 'Design', desc: 'Placeholder: describe here how you move from problem to a concrete interface and architecture.' },
+        3: { title: 'Build', desc: 'Placeholder: describe here how you develop, which tools you use and how you keep quality up.' },
+        4: { title: 'Ship', desc: 'Placeholder: describe here how you deploy, measure and follow up after delivery.' },
+      },
     },
 
     // Projects
     projects: {
+      label: 'Selected work',
       title: 'Projects',
       cta_github: 'View more projects on GitHub',
       close: 'Close',
