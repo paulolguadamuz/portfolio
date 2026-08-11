@@ -892,6 +892,18 @@ h1, h2, h3, h4, h5, h6 {
   position: relative;
   display: grid;
   place-items: end center;
+  border-radius: 20px;
+}
+
+/* Sombreado circular pronunciado (viñeta) */
+.about__photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  /* Sombra circular que oscurece todo fuera del centro */
+  background: radial-gradient(circle at center, transparent 40%, rgba(0, 0, 0, 0.95) 75%);
+  pointer-events: none;
+  z-index: 5;
 }
 
 .about__photo::before {
@@ -917,9 +929,16 @@ h1, h2, h3, h4, h5, h6 {
   width: 100%;
   height: auto;
   max-height: 78vh;
-  object-fit: contain;
-  object-position: bottom center;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 20px;
   will-change: transform;
+  
+  /* Máscara en forma de CÍRCULO para difuminar la imagen y seguir el sombreado */
+  -webkit-mask-image: radial-gradient(circle at center, black 45%, transparent 75%);
+  mask-image: radial-gradient(circle at center, black 45%, transparent 75%);
+
+  /* Quitamos el mix-blend-mode que saturaba colores, dejamos el sombreado hacer su trabajo */
 }
 
 /* ══════════════════════════════════════════════════════════════════

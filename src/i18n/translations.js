@@ -49,18 +49,14 @@ const translations = {
     },
 
     // Proceso
-    // ⚠️ TEXTO PROVISIONAL — Paulo debe reescribir estos 4 pasos con su método real.
-    // No hay ninguna descripción de proceso en el repositorio, así que esto es
-    // una estructura de ejemplo, no una afirmación sobre cómo trabaja.
     process: {
       label: 'Proceso',
       heading: 'Cómo trabajo',
-      note: 'Texto provisional — pendiente de redacción.',
       steps: {
-        1: { title: 'Entender', desc: 'Texto provisional: describe aquí cómo levantas requisitos y defines el problema antes de escribir código.' },
-        2: { title: 'Diseñar', desc: 'Texto provisional: describe aquí cómo pasas del problema a una interfaz y una arquitectura concretas.' },
-        3: { title: 'Construir', desc: 'Texto provisional: describe aquí tu forma de desarrollar, tus herramientas y tu control de calidad.' },
-        4: { title: 'Entregar', desc: 'Texto provisional: describe aquí cómo despliegas, mides y das seguimiento después de la entrega.' },
+        1: { title: 'Entender', desc: 'Escucho tus necesidades y requisitos, analizo el problema y propongo soluciones.' },
+        2: { title: 'Diseñar', desc: 'Hago un primer borrador (PDF), si te gusta continuamos con el desarrollo.' },
+        3: { title: 'Construir', desc: 'Construyo el proyecto con las mejores prácticas y las últimas tecnologías.' },
+        4: { title: 'Entregar', desc: 'Entrego la primera versión, obtengo feedback e itero.' },
       },
     },
 
@@ -307,32 +303,29 @@ const translations = {
     // About
     about: {
       label: 'About',
-      heading_1: 'I build',
-      heading_2: 'products that',
-      heading_3: 'get used.',
+      heading_1: 'I love building',
+      heading_2: 'efficient',
+      heading_3: 'products.',
       meta_role: 'Role',
       meta_role_value: 'IT Engineer · Web Developer · UI/UX',
       meta_location: 'Based in',
       meta_location_value: 'Costa Rica',
       meta_email: 'Email',
       meta_stack: 'Core stack',
-      meta_stack_value: '.NET · React · Next.js · TypeScript · PostgreSQL',
+      meta_stack_value: '.NET · React · Next.js · TypeScript · C# · PHP · PostgreSQL',
       photo_alt: 'Portrait of Paulo Jimenez Guadamuz',
     },
 
-    // Process
-    // ⚠️ PLACEHOLDER COPY — Paulo must rewrite these 4 steps with his real method.
-    // Nothing in the repository describes a process, so this is example
-    // structure, not a claim about how he works.
+
     process: {
       label: 'Process',
       heading: 'How I work',
       note: 'Placeholder copy — pending rewrite.',
       steps: {
-        1: { title: 'Understand', desc: 'Placeholder: describe here how you gather requirements and frame the problem before writing any code.' },
-        2: { title: 'Design', desc: 'Placeholder: describe here how you move from problem to a concrete interface and architecture.' },
-        3: { title: 'Build', desc: 'Placeholder: describe here how you develop, which tools you use and how you keep quality up.' },
-        4: { title: 'Ship', desc: 'Placeholder: describe here how you deploy, measure and follow up after delivery.' },
+        1: { title: 'Understand', desc: 'I listen to your needs and requirements, analyze the problem and propose solutions.' },
+        2: { title: 'Design', desc: 'Made the first draft (PDF), if you like it we continue to development.' },
+        3: { title: 'Build', desc: 'I build the project with best practices and latest technologies.' },
+        4: { title: 'Ship', desc: 'Ship first version, get feedback and iterate.' },
       },
     },
 
