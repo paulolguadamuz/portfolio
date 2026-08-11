@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { SplitText } from 'gsap/SplitText';
 import { FiExternalLink, FiLock, FiBookOpen, FiChevronUp } from 'react-icons/fi';
 import { useLang } from '../i18n/LanguageContext';
+import { FULL_MOTION, FULL_MOTION_FINE, makeMagnetic } from '../lib/motion';
 
 export default function ProjectCard({ project, index, onImageClick, onShowcase, showcaseOpen }) {
   const { t } = useLang();
@@ -15,13 +16,22 @@ export default function ProjectCard({ project, index, onImageClick, onShowcase, 
   const actionRef = useRef(null);
 
   const isEven = index % 2 === 0;
-
-  // Get translated description if available
   const description = t(`projects.descriptions.${project.id}`) || project.description;
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Main image premium parallax reveal
+    const mm = gsap.matchMedia();
+    let cancelled = false;
+
+    mm.add(FULL_MOTION, () => {
+      const splits = [];
+      const trigger = {
+        trigger: cardRef.current,
+        start: 'top 75%',
+        toggleActions: 'play none none reverse',
+      };
+
+      // Main image: directional clip-path wipe + the photo settling out of a
+      // slight over-scale. Both compositor-friendly — no filters.
       gsap.fromTo(
         imageRef.current,
         { clipPath: isEven ? 'inset(0% 100% 0% 0%)' : 'inset(0% 0% 0% 100%)' },
@@ -29,192 +39,173 @@ export default function ProjectCard({ project, index, onImageClick, onShowcase, 
           clipPath: 'inset(0% 0% 0% 0%)',
           duration: 1.5,
           ease: 'expo.inOut',
-          scrollTrigger: {
-            trigger: cardRef.current,
-            start: 'top 75%',
-            toggleActions: 'play none none reverse',
-          },
+          scrollTrigger: trigger,
         }
       );
 
-      const mainImg = imageRef.current.querySelector('img');
       gsap.fromTo(
-        mainImg,
+        imageRef.current.querySelector('img'),
         { scale: 1.3 },
-        {
-          scale: 1,
-          duration: 1.5,
-          ease: 'expo.inOut',
-          scrollTrigger: {
-            trigger: cardRef.current,
-            start: 'top 75%',
-            toggleActions: 'play none none reverse',
-          },
-        }
+        { scale: 1, duration: 1.5, ease: 'expo.inOut', scrollTrigger: trigger }
       );
 
-      // Gallery thumbnails stagger
-      if (galleryRef.current) {
-        const thumbs = galleryRef.current.children;
-        if (thumbs.length) {
-          gsap.fromTo(
-            thumbs,
-            { clipPath: 'inset(100% 0% 0% 0%)', y: 20 },
-            {
-              clipPath: 'inset(0% 0% 0% 0%)',
-              y: 0,
-              duration: 1.2,
-              stagger: 0.1,
-              ease: 'expo.out',
-              scrollTrigger: {
-                trigger: cardRef.current,
-                start: 'top 65%',
-                toggleActions: 'play none none reverse',
-              },
-            }
-          );
-        }
+      if (galleryRef.current?.children.length) {
+        gsap.fromTo(
+          galleryRef.current.children,
+          { clipPath: 'inset(100% 0% 0% 0%)', y: 20 },
+          {
+            clipPath: 'inset(0% 0% 0% 0%)',
+            y: 0,
+            duration: 1.2,
+            stagger: 0.1,
+            ease: 'expo.out',
+            scrollTrigger: { ...trigger, start: 'top 65%' },
+          }
+        );
       }
 
-      // Title reveal
-      gsap.fromTo(
-        titleRef.current,
-        { opacity: 0, y: 50, rotateX: -30, filter: 'blur(10px)' },
-        {
-          opacity: 1,
-          y: 0,
-          rotateX: 0,
-          filter: 'blur(0px)',
-          duration: 1.2,
+      // Masked line reveal for the title — waits for fonts so lines break right
+      document.fonts.ready.then(() => {
+        if (cancelled) return;
+        const titleSplit = SplitText.create(titleRef.current, {
+          type: 'lines',
+          mask: 'lines',
+        });
+        splits.push(titleSplit);
+        gsap.from(titleSplit.lines, {
+          yPercent: 115,
+          duration: 1.1,
+          stagger: 0.08,
           ease: 'expo.out',
-          scrollTrigger: {
-            trigger: cardRef.current,
-            start: 'top 75%',
-            toggleActions: 'play none none reverse',
-          },
-        }
-      );
+          scrollTrigger: trigger,
+        });
+      });
 
-      // Description reveal
       gsap.fromTo(
         descRef.current,
-        { opacity: 0, y: 30, filter: 'blur(8px)' },
+        { opacity: 0, y: 30 },
         {
           opacity: 1,
           y: 0,
-          filter: 'blur(0px)',
           duration: 1.2,
           delay: 0.1,
           ease: 'expo.out',
-          scrollTrigger: {
-            trigger: cardRef.current,
-            start: 'top 70%',
-            toggleActions: 'play none none reverse',
-          },
+          scrollTrigger: { ...trigger, start: 'top 70%' },
         }
       );
 
-      // Tags stagger reveal
-      const tagEls = tagsRef.current?.children;
-      if (tagEls?.length) {
+      if (tagsRef.current?.children.length) {
         gsap.fromTo(
-          tagEls,
-          { opacity: 0, y: 20, scale: 0.9, filter: 'blur(4px)' },
+          tagsRef.current.children,
+          { opacity: 0, y: 20, scale: 0.9 },
           {
             opacity: 1,
             y: 0,
             scale: 1,
-            filter: 'blur(0px)',
             duration: 0.8,
             stagger: 0.05,
             ease: 'expo.out',
-            scrollTrigger: {
-              trigger: cardRef.current,
-              start: 'top 65%',
-              toggleActions: 'play none none reverse',
-            },
+            scrollTrigger: { ...trigger, start: 'top 65%' },
           }
         );
       }
 
-      // Action button reveal
       if (actionRef.current) {
         gsap.fromTo(
           actionRef.current,
-          { opacity: 0, y: 24, scale: 0.92, filter: 'blur(6px)' },
+          { opacity: 0, y: 24, scale: 0.92 },
           {
             opacity: 1,
             y: 0,
             scale: 1,
-            filter: 'blur(0px)',
             duration: 1,
             delay: 0.15,
             ease: 'expo.out',
-            scrollTrigger: {
-              trigger: cardRef.current,
-              start: 'top 60%',
-              toggleActions: 'play none none reverse',
-            },
+            scrollTrigger: { ...trigger, start: 'top 60%' },
           }
         );
       }
+
+      // Scramble the project number on arrival
+      const numEl = cardRef.current.querySelector('.project-number');
+      if (numEl) {
+        gsap.to(numEl, {
+          duration: 1,
+          scrambleText: { text: numEl.dataset.value, chars: '0123456789', speed: 0.5 },
+          ease: 'none',
+          scrollTrigger: { ...trigger, start: 'top 80%' },
+        });
+      }
+
+      return () => splits.forEach((s) => s.revert());
     }, cardRef);
 
-    return () => ctx.revert();
+    mm.add(FULL_MOTION_FINE, () => {
+      const cleanups = gsap.utils
+        .toArray('.magnetic', cardRef.current)
+        .map((el) => makeMagnetic(el, { strength: 0.28 }));
+      return () => cleanups.forEach((fn) => fn());
+    }, cardRef);
+
+    return () => {
+      cancelled = true;
+      mm.revert();
+    };
   }, [isEven]);
 
-  // Translate tag if a translation exists, otherwise keep the original
   const translateTag = (tag) => {
     const translated = t(`projects.tags.${tag}`);
-    // If translation returns the key path, it means no translation exists — keep original
     return translated === `projects.tags.${tag}` ? tag : translated;
   };
 
   return (
-    <div
-      ref={cardRef}
-      className="max-w-7xl mx-auto px-6 lg:px-8 w-full"
-    >
-      <div
-        className={`grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center ${
-          isEven ? '' : 'lg:[direction:rtl]'
-        }`}
-      >
-        {/* Images column */}
-        <div className="flex flex-col gap-4 lg:[direction:ltr]">
-          {/* Main image */}
+    <div ref={cardRef} className="max-w-7xl mx-auto px-6 lg:px-8 w-full">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+        {/* Images column — swaps sides on desktop via order, not direction:rtl */}
+        <div className={`flex flex-col gap-4 ${isEven ? '' : 'lg:order-2'}`}>
           <div
             ref={imageRef}
             className="project-image-frame rounded-2xl overflow-hidden shadow-2xl"
-            style={{
-              boxShadow: `0 25px 60px -12px ${project.palette.accent}25`,
-            }}
+            style={{ boxShadow: `0 25px 60px -12px ${project.palette.accent}25` }}
           >
             <img
               src={project.image}
               alt={project.title}
-              className="w-full h-auto aspect-video object-cover cursor-pointer hover:scale-105 transition-transform duration-700"
-              loading="lazy"
+              width="1600"
+              height="900"
+              className="w-full h-auto aspect-video object-cover cursor-pointer"
+              loading={index === 0 ? 'eager' : 'lazy'}
+              fetchpriority={index === 0 ? 'high' : undefined}
+              decoding="async"
+              data-cursor="view"
+              data-cursor-label={t('projects.view')}
               onClick={() => onImageClick(project.image)}
             />
           </div>
 
-          {/* Gallery thumbnails */}
-          {project.gallery && project.gallery.length > 0 && (
-            <div ref={galleryRef} className={`grid gap-3 ${project.gallery.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
+          {project.gallery?.length > 0 && (
+            <div
+              ref={galleryRef}
+              className={`grid gap-3 ${
+                project.gallery.length === 2 ? 'grid-cols-2' : 'grid-cols-3'
+              }`}
+            >
               {project.gallery.map((img, i) => (
                 <div
-                  key={i}
+                  key={img}
                   className="project-image-frame rounded-lg overflow-hidden border border-white/10"
-                  style={{
-                    boxShadow: `0 8px 24px -4px ${project.palette.accent}15`,
-                  }}
+                  style={{ boxShadow: `0 8px 24px -4px ${project.palette.accent}15` }}
                 >
                   <img
                     src={img}
-                    alt={`${project.title} - ${t('projects.view')} ${i + 1}`}
-                    className="w-full h-auto aspect-video object-cover cursor-pointer hover:scale-105 transition-transform duration-700"
+                    alt={`${project.title} - ${t('projects.view')} ${i + 2}`}
+                    width="1600"
+                    height="900"
+                    className="w-full h-auto aspect-video object-cover cursor-pointer"
                     loading="lazy"
+                    decoding="async"
+                    data-cursor="view"
+                    data-cursor-label={t('projects.view')}
                     onClick={() => onImageClick(img)}
                   />
                 </div>
@@ -224,10 +215,11 @@ export default function ProjectCard({ project, index, onImageClick, onShowcase, 
         </div>
 
         {/* Text column */}
-        <div className="flex flex-col gap-5 lg:[direction:ltr]">
-          {/* Project number */}
+        <div className={`flex flex-col gap-5 ${isEven ? '' : 'lg:order-1'}`}>
           <span
-            className="font-display font-bold text-7xl lg:text-8xl opacity-10 leading-none"
+            aria-hidden="true"
+            data-value={String(project.id).padStart(2, '0')}
+            className="project-number font-display font-bold text-7xl lg:text-8xl opacity-30 leading-none"
             style={{ color: project.palette.accent }}
           >
             {String(project.id).padStart(2, '0')}
@@ -249,36 +241,33 @@ export default function ProjectCard({ project, index, onImageClick, onShowcase, 
             {description}
           </p>
 
-          {/* Tags */}
           <div ref={tagsRef} className="flex flex-wrap gap-x-5 gap-y-2 mt-4">
             {project.tags.map((tag) => (
               <span
                 key={tag}
                 className="flex items-center gap-2 font-body text-xs uppercase tracking-widest font-medium"
-                style={{
-                  color: project.palette.surface,
-                }}
+                style={{ color: project.palette.surface }}
               >
-                <span 
-                  className="w-1.5 h-1.5 rounded-full" 
-                  style={{ 
+                <span
+                  className="w-1.5 h-1.5 rounded-full"
+                  style={{
                     backgroundColor: project.palette.accent,
-                    boxShadow: `0 0 8px ${project.palette.accent}`
-                  }} 
+                    boxShadow: `0 0 8px ${project.palette.accent}`,
+                  }}
                 />
                 {translateTag(tag)}
               </span>
             ))}
           </div>
 
-          {/* Project action — visit site, private badge, case study */}
           <div ref={actionRef} className="flex flex-wrap items-center gap-3 mt-6">
             {project.url && (
               <a
                 href={project.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="project-visit-btn"
+                className="magnetic project-visit-btn"
+                data-cursor="link"
                 style={{
                   '--accent': project.palette.accent,
                   '--surface': project.palette.surface,
@@ -307,13 +296,16 @@ export default function ProjectCard({ project, index, onImageClick, onShowcase, 
 
             {onShowcase && (
               <button
+                type="button"
                 onClick={onShowcase}
-                className="project-showcase-btn"
+                className="magnetic project-showcase-btn"
+                data-cursor="link"
+                aria-expanded={!!showcaseOpen}
+                aria-controls={`showcase-${project.id}`}
                 style={{
                   '--accent': project.palette.accent,
                   '--surface': project.palette.surface,
                 }}
-                disabled={showcaseOpen}
               >
                 <span className="project-visit-btn__glow" />
                 <span className="project-visit-btn__content">

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useLang } from '../i18n/LanguageContext';
+import { FULL_MOTION, FULL_MOTION_FINE, makeMagnetic } from '../lib/motion';
 
 /* ── Sanitization & Validation helpers ── */
 
@@ -109,7 +110,9 @@ export default function Contact() {
   };
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
+    const mm = gsap.matchMedia();
+
+    mm.add(FULL_MOTION, () => {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -119,11 +122,12 @@ export default function Contact() {
         defaults: { ease: 'power3.out' },
       });
 
-      tl.fromTo(
-        headingRef.current,
-        { opacity: 0, y: 50, rotateX: -20, filter: 'blur(10px)' },
-        { opacity: 1, y: 0, rotateX: 0, filter: 'blur(0px)', duration: 1.2 }
-      )
+      tl.from('.contact__line', {
+        yPercent: 115,
+        duration: 1.1,
+        stagger: 0.1,
+        ease: 'expo.out',
+      })
         .fromTo(
           subtextRef.current,
           { opacity: 0, y: 20 },
@@ -132,59 +136,72 @@ export default function Contact() {
         )
         .fromTo(
           formRef.current,
-          { opacity: 0, y: 40, scale: 0.98, filter: 'blur(10px)' },
-          { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)', duration: 1.2 },
-          '-=0.8'
-        );
+          { opacity: 0, y: 40 },
+          { opacity: 1, y: 0, duration: 1.2 },
+          '-=0.85'
+        )
+        .from('.contact__direct li', { opacity: 0, y: 16, stagger: 0.08, duration: 0.7 }, '-=0.9');
     }, sectionRef);
 
-    return () => ctx.revert();
+    // Magnetic submit
+    mm.add(FULL_MOTION_FINE, () => {
+      const cleanup = makeMagnetic(sectionRef.current.querySelector('.contact__submit'), {
+        strength: 0.25,
+      });
+      return () => cleanup();
+    }, sectionRef);
+
+    return () => mm.revert();
   }, []);
 
-  /* ── Inline error helper ── */
+  /* ── Inline error helper — linked to its input via aria-describedby ── */
   const fieldError = (field) =>
     errors[field] ? (
-      <span className="font-body text-xs text-red-400 mt-1">{errors[field]}</span>
+      <span id={`contact-${field}-error`} className="font-body text-xs text-red-400 mt-1">
+        {errors[field]}
+      </span>
     ) : null;
 
+  /* ── Shared a11y wiring for an errored field ── */
+  const errorProps = (field) =>
+    errors[field]
+      ? { 'aria-invalid': true, 'aria-describedby': `contact-${field}-error` }
+      : {};
+
   return (
-    <section
-      id="contact"
-      ref={sectionRef}
-      className="relative py-32 overflow-hidden"
-    >
-      {/* Decorative blurred orb */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-light/[0.02] blur-3xl pointer-events-none" />
+    <section id="contact" ref={sectionRef} className="contact">
+      <div className="contact__inner">
+        {/* Full-bleed typographic statement */}
+        <h2 ref={headingRef} className="contact__heading font-display">
+          <span className="contact__line">{t('contact.heading_1')}</span>
+          <span className="contact__line contact__line--muted">{t('contact.heading_2')}</span>
+        </h2>
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-
-          {/* Left side: Typography & Info */}
-          <div className="flex flex-col gap-8 text-left">
-            <h2
-              ref={headingRef}
-              className="font-display font-extrabold text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] tracking-tight leading-[1.1] text-light"
-            >
-              {t('contact.heading_1')} <br className="hidden lg:block" />
-              <span className="text-light/50">
-                {t('contact.heading_2')}
-              </span>
-            </h2>
-
-            <p
-              ref={subtextRef}
-              className="font-body text-lg sm:text-xl text-light/50 max-w-lg leading-relaxed"
-            >
+        <div className="contact__grid">
+          <div className="contact__aside">
+            <p ref={subtextRef} className="contact__subtext font-body">
               {t('contact.subtext')}
             </p>
+
+            <ul className="contact__direct font-body">
+              <li>
+                <a href="mailto:paujigua@gmail.com" data-cursor="link">
+                  paujigua@gmail.com
+                </a>
+              </li>
+              <li>
+                <a href="tel:+50687397574" data-cursor="link">
+                  +506 8739 7574
+                </a>
+              </li>
+            </ul>
           </div>
 
-          {/* Right side: Contact Form */}
           <form
             ref={formRef}
-            className="glass rounded-2xl p-8 sm:p-10 text-left flex flex-col gap-6"
+            className="contact__form glass"
             onSubmit={handleSubmit}
-            autoComplete="off"
+            noValidate
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="flex flex-col gap-2">
@@ -203,8 +220,9 @@ export default function Contact() {
                   className={`form-input bg-white/5 border rounded-xl px-4 py-3 text-light font-body placeholder:text-light/25 transition-colors ${errors.name ? 'border-red-400/60' : 'border-white/10'
                     }`}
                   disabled={status.state === 'loading'}
-                  autoComplete="off"
+                  autoComplete="name"
                   maxLength={LIMITS.name}
+                  {...errorProps('name')}
                 />
                 {fieldError('name')}
               </div>
@@ -218,15 +236,17 @@ export default function Contact() {
                 </label>
                 <input
                   id="contact-email"
-                  type="text"
+                  type="email"
+                  inputMode="email"
                   value={formData.email}
                   onChange={handleChange}
                   placeholder={t('contact.placeholder_email')}
                   className={`form-input bg-white/5 border rounded-xl px-4 py-3 text-light font-body placeholder:text-light/25 transition-colors ${errors.email ? 'border-red-400/60' : 'border-white/10'
                     }`}
                   disabled={status.state === 'loading'}
-                  autoComplete="off"
+                  autoComplete="email"
                   maxLength={LIMITS.email}
+                  {...errorProps('email')}
                 />
                 {fieldError('email')}
               </div>
@@ -248,8 +268,8 @@ export default function Contact() {
                 className={`form-input bg-white/5 border rounded-xl px-4 py-3 text-light font-body placeholder:text-light/25 resize-none transition-colors ${errors.message ? 'border-red-400/60' : 'border-white/10'
                   }`}
                 disabled={status.state === 'loading'}
-                autoComplete="off"
                 maxLength={LIMITS.message}
+                {...errorProps('message')}
               />
               <div className="flex justify-between items-center">
                 {fieldError('message')}
@@ -263,15 +283,21 @@ export default function Contact() {
               <button
                 type="submit"
                 disabled={status.state === 'loading'}
-                className="font-body text-sm uppercase tracking-widest px-8 py-3 bg-light text-dark rounded-full hover:bg-light/90 hover:scale-105 transition-all duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 w-full sm:w-auto"
+                data-cursor="link"
+                className="contact__submit font-body text-sm uppercase tracking-widest px-8 py-3 bg-light text-dark rounded-full hover:bg-light/90 transition-colors duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
               >
                 {status.state === 'loading' ? t('contact.sending') : t('contact.submit')}
               </button>
-              {status.message && (
-                <p className={`font-body text-sm ${status.state === 'error' ? 'text-red-400' : 'text-green-400'}`}>
-                  {status.message}
-                </p>
-              )}
+              {/* Announced to screen readers — the form used to change silently */}
+              <p
+                role="status"
+                aria-live="polite"
+                className={`font-body text-sm ${
+                  status.state === 'error' ? 'text-red-400' : 'text-green-400'
+                }`}
+              >
+                {status.message}
+              </p>
             </div>
           </form>
         </div>

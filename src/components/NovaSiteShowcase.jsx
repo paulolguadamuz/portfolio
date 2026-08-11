@@ -60,36 +60,36 @@ const NovaSiteShowcase = forwardRef(function NovaSiteShowcase({ onClose }, ref) 
 
       // Heading block reveals
       tl.fromTo(heading,
-        { opacity: 0, y: 50, filter: 'blur(14px)' },
-        { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1 },
+        { opacity: 0, y: 50 },
+        { opacity: 1, y: 0, duration: 1 },
         0.1
       );
 
       // Feature cards stagger from below
       tl.fromTo(featureCards,
-        { opacity: 0, y: 40, scale: 0.94, filter: 'blur(8px)' },
-        { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)', duration: 0.9, stagger: 0.08 },
+        { opacity: 0, y: 40, scale: 0.94 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.9, stagger: 0.08 },
         0.35
       );
 
       // Contribution heading
       tl.fromTo(contribHeading,
-        { opacity: 0, y: 35, filter: 'blur(10px)' },
-        { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.9 },
+        { opacity: 0, y: 35 },
+        { opacity: 1, y: 0, duration: 0.9 },
         0.7
       );
 
       // Contribution items slide in from alternating sides
       tl.fromTo(contribItems,
-        { opacity: 0, x: (i) => i % 2 === 0 ? -30 : 30, filter: 'blur(6px)' },
-        { opacity: 1, x: 0, filter: 'blur(0px)', duration: 0.85, stagger: 0.07 },
+        { opacity: 0, x: (i) => i % 2 === 0 ? -30 : 30 },
+        { opacity: 1, x: 0, duration: 0.85, stagger: 0.07 },
         0.85
       );
 
       // Stack section
       tl.fromTo(stackSection,
-        { opacity: 0, y: 25, filter: 'blur(8px)' },
-        { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.9 },
+        { opacity: 0, y: 25 },
+        { opacity: 1, y: 0, duration: 0.9 },
         1.1
       );
 
@@ -119,7 +119,6 @@ const NovaSiteShowcase = forwardRef(function NovaSiteShowcase({ onClose }, ref) 
       tl.to(allAnimated, {
         opacity: 0,
         y: -20,
-        filter: 'blur(6px)',
         duration: 0.4,
         stagger: 0.02,
       });

@@ -1,8 +1,9 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useLang } from '../i18n/LanguageContext';
+import { scrollToSection } from '../lib/motion';
 import LanguageToggle from './LanguageToggle';
 
-export default function Navbar({ lenisRef }) {
+export default function Navbar() {
   const { t } = useLang();
   const [activeSection, setActiveSection] = useState('hero');
   const [scrolled, setScrolled] = useState(false);
@@ -11,6 +12,8 @@ export default function Navbar({ lenisRef }) {
   const navItems = [
     { label: t('nav.home'), href: '#hero' },
     { label: t('nav.projects'), href: '#projects' },
+    { label: t('nav.about'), href: '#about' },
+    { label: t('nav.skills'), href: '#skills' },
     { label: t('nav.contact'), href: '#contact' },
   ];
 
@@ -41,27 +44,21 @@ export default function Navbar({ lenisRef }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleNavClick = useCallback(
-    (e, href) => {
-      e.preventDefault();
-      const target = document.querySelector(href);
-      if (target && lenisRef?.current) {
-        lenisRef.current.scrollTo(target, { offset: -80 });
-      }
-      setMenuOpen(false);
-    },
-    [lenisRef]
-  );
+  const handleNavClick = useCallback((e, href) => {
+    e.preventDefault();
+    scrollToSection(href);
+    setMenuOpen(false);
+  }, []);
 
   return (
     <nav
       id="navbar"
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
-        ? 'glass py-3'
-        : 'bg-transparent py-5'
-        }`}
+      aria-label={t('nav.aria_label')}
+      className={`navbar-shell fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        scrolled ? 'navbar-shell--scrolled py-3' : 'py-5'
+      }`}
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between relative z-10">
         {/* Logo */}
         <a
           href="#hero"
@@ -79,10 +76,13 @@ export default function Navbar({ lenisRef }) {
                 <a
                   href={item.href}
                   onClick={(e) => handleNavClick(e, item.href)}
-                  className={`nav-link font-body text-sm tracking-wide uppercase transition-opacity ${activeSection === item.href.slice(1)
-                    ? 'active text-light opacity-100'
-                    : 'text-light/60 hover:text-light/90'
-                    }`}
+                  data-cursor="link"
+                  aria-current={activeSection === item.href.slice(1) ? 'true' : undefined}
+                  className={`nav-link font-body text-sm tracking-wide uppercase transition-opacity ${
+                    activeSection === item.href.slice(1)
+                      ? 'active text-light opacity-100'
+                      : 'text-light/70 hover:text-light'
+                  }`}
                 >
                   {item.label}
                 </a>
@@ -98,19 +98,24 @@ export default function Navbar({ lenisRef }) {
           <button
             className="relative w-8 h-8 flex flex-col justify-center items-center gap-1.5"
             onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Toggle menu"
+            aria-label={t('nav.toggle_menu')}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
           >
             <span
-              className={`block w-6 h-0.5 bg-light transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-2' : ''
-                }`}
+              className={`block w-6 h-0.5 bg-light transition-all duration-300 ${
+                menuOpen ? 'rotate-45 translate-y-2' : ''
+              }`}
             />
             <span
-              className={`block w-6 h-0.5 bg-light transition-all duration-300 ${menuOpen ? 'opacity-0' : ''
-                }`}
+              className={`block w-6 h-0.5 bg-light transition-all duration-300 ${
+                menuOpen ? 'opacity-0' : ''
+              }`}
             />
             <span
-              className={`block w-6 h-0.5 bg-light transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-2' : ''
-                }`}
+              className={`block w-6 h-0.5 bg-light transition-all duration-300 ${
+                menuOpen ? '-rotate-45 -translate-y-2' : ''
+              }`}
             />
           </button>
         </div>
@@ -118,8 +123,10 @@ export default function Navbar({ lenisRef }) {
 
       {/* Mobile Menu */}
       <div
-        className={`md:hidden overflow-hidden transition-all duration-500 ${menuOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'
-          }`}
+        id="mobile-menu"
+        className={`md:hidden overflow-hidden transition-all duration-500 relative z-10 ${
+          menuOpen ? 'max-h-72 opacity-100' : 'max-h-0 opacity-0'
+        }`}
       >
         <ul className="px-6 pb-6 pt-2 flex flex-col gap-4">
           {navItems.map((item) => (
@@ -127,10 +134,11 @@ export default function Navbar({ lenisRef }) {
               <a
                 href={item.href}
                 onClick={(e) => handleNavClick(e, item.href)}
-                className={`nav-link font-body text-sm tracking-wide uppercase block py-2 ${activeSection === item.href.slice(1)
-                  ? 'active text-light'
-                  : 'text-light/60'
-                  }`}
+                data-cursor="link"
+                tabIndex={menuOpen ? 0 : -1}
+                className={`nav-link font-body text-sm tracking-wide uppercase block py-2 ${
+                  activeSection === item.href.slice(1) ? 'active text-light' : 'text-light/70'
+                }`}
               >
                 {item.label}
               </a>

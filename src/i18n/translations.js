@@ -3,8 +3,12 @@ const translations = {
     // Navbar
     nav: {
       home: 'Inicio',
+      skills: 'Skills',
+      about: 'Sobre mí',
       projects: 'Proyectos',
       contact: 'Contacto',
+      aria_label: 'Navegación principal',
+      toggle_menu: 'Abrir o cerrar el menú',
     },
 
     // Hero
@@ -13,10 +17,52 @@ const translations = {
       bio: 'Soy un ingeniero en tecnologías de información con experiencia en desarrollo web, diseño de interfaces, ciberseguridad y soluciones tecnológicas. Me especializo en crear soluciones eficientes y escalables para empresas y organizaciones.',
       cta_projects: 'Ver proyectos',
       cta_contact: 'Contacto',
+      scroll_cue: 'Desliza',
+      meta_based: 'Ubicación',
+      meta_projects: 'Proyectos',
+      meta_focus: 'Enfoque',
+      meta_focus_value: 'Web · UI/UX · Backend',
+    },
+
+    // Work (índice de proyectos)
+    work: {
+      title: 'Trabajo seleccionado',
+      open: 'Abrir',
+      close: 'Cerrar',
+      hint: 'Selecciona un proyecto para ver el detalle',
+    },
+
+    // Sobre mí
+    about: {
+      label: 'Sobre mí',
+      heading_1: 'Construyo',
+      heading_2: 'productos que',
+      heading_3: 'se usan.',
+      meta_role: 'Rol',
+      meta_role_value: 'Ingeniero TI · Desarrollador Web · UI/UX',
+      meta_location: 'Ubicación',
+      meta_location_value: 'Costa Rica',
+      meta_email: 'Email',
+      meta_stack: 'Stack principal',
+      meta_stack_value: '.NET · React · Next.js · TypeScript · PostgreSQL',
+      photo_alt: 'Retrato de Paulo Jimenez Guadamuz',
+    },
+
+    // Proceso
+    process: {
+      label: 'Proceso',
+      heading: 'Cómo trabajo',
+      steps: {
+        1: { title: 'Entender', desc: 'Escucho tus necesidades y requisitos, analizo el problema y propongo soluciones.' },
+        2: { title: 'Diseñar', desc: 'Hago un primer borrador (PDF), si te gusta continuamos con el desarrollo.' },
+        3: { title: 'Construir', desc: 'Construyo el proyecto con las mejores prácticas y las últimas tecnologías.' },
+        4: { title: 'Entregar', desc: 'Entrego la primera versión, obtengo feedback e itero.' },
+      },
     },
 
     // Projects
     projects: {
+      label: 'Trabajo seleccionado',
       title: 'Proyectos',
       cta_github: 'Ver más proyectos en GitHub',
       close: 'Cerrar',
@@ -225,8 +271,12 @@ const translations = {
     // Navbar
     nav: {
       home: 'Home',
+      skills: 'Skills',
+      about: 'About',
       projects: 'Projects',
       contact: 'Contact',
+      aria_label: 'Main navigation',
+      toggle_menu: 'Toggle menu',
     },
 
     // Hero
@@ -235,10 +285,53 @@ const translations = {
       bio: 'I am an information technology engineer with experience in web development, interface design, cybersecurity and technology solutions. I specialize in creating efficient and scalable solutions for companies and organizations.',
       cta_projects: 'View projects',
       cta_contact: 'Contact',
+      scroll_cue: 'Scroll',
+      meta_based: 'Based in',
+      meta_projects: 'Projects',
+      meta_focus: 'Focus',
+      meta_focus_value: 'Web · UI/UX · Backend',
+    },
+
+    // Work (project index)
+    work: {
+      title: 'Selected work',
+      open: 'Open',
+      close: 'Close',
+      hint: 'Select a project to see the detail',
+    },
+
+    // About
+    about: {
+      label: 'About',
+      heading_1: 'I love building',
+      heading_2: 'efficient',
+      heading_3: 'products.',
+      meta_role: 'Role',
+      meta_role_value: 'IT Engineer · Web Developer · UI/UX',
+      meta_location: 'Based in',
+      meta_location_value: 'Costa Rica',
+      meta_email: 'Email',
+      meta_stack: 'Core stack',
+      meta_stack_value: '.NET · React · Next.js · TypeScript · C# · PHP · PostgreSQL',
+      photo_alt: 'Portrait of Paulo Jimenez Guadamuz',
+    },
+
+
+    process: {
+      label: 'Process',
+      heading: 'How I work',
+      note: 'Placeholder copy — pending rewrite.',
+      steps: {
+        1: { title: 'Understand', desc: 'I listen to your needs and requirements, analyze the problem and propose solutions.' },
+        2: { title: 'Design', desc: 'Made the first draft (PDF), if you like it we continue to development.' },
+        3: { title: 'Build', desc: 'I build the project with best practices and latest technologies.' },
+        4: { title: 'Ship', desc: 'Ship first version, get feedback and iterate.' },
+      },
     },
 
     // Projects
     projects: {
+      label: 'Selected work',
       title: 'Projects',
       cta_github: 'View more projects on GitHub',
       close: 'Close',

@@ -1,15 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Allura&family=Great+Vibes&display=swap');
+/* Fonts are loaded from index.html via preconnect + <link> so the request starts
+   in parallel with this stylesheet instead of being discovered inside it. */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* ── CSS Custom Properties ── */
-:root {
-  --bg-from: #0A0A0B;
-  --bg-to: #0A0A0B;
-  --transition-duration: 0.3s;
-}
 
 /* ── Global Resets ── */
 * {
@@ -40,13 +34,69 @@ html.lenis, html.lenis body {
 
 body {
   font-family: 'Space Grotesk', sans-serif;
-  background: linear-gradient(135deg, var(--bg-from), var(--bg-to));
+  /* Static. The per-project palette lives on .bg-stack layers so scrolling
+     fades composited opacity instead of repainting a full-viewport gradient. */
+  background: #0A0A0B;
   color: #F5F5F0;
   overflow-x: hidden;
   min-height: 100vh;
-  transition: background var(--transition-duration) ease;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Fixed anchors sit under the sticky navbar without this */
+section[id] {
+  scroll-margin-top: 96px;
+}
+
+/* ── Project palette layers ── */
+.bg-stack {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.bg-stack__layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  /* Justified: these five layers are the only continuously scrubbed elements. */
+  will-change: opacity;
+}
+
+/* ── Keyboard focus ── */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #F5F5F0;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ── Skip link ── */
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: -120%;
+  z-index: 200;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  background: #F5F5F0;
+  color: #0A0A0B;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 1rem;
 }
 
 /* ── Typography ── */
@@ -82,21 +132,26 @@ h1, h2, h3, h4, h5, h6 {
   color: #F5F5F0;
 }
 
-/* ── WhatsApp Pulse Animation ── */
-@keyframes whatsapp-pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5);
-  }
-  70% {
-    box-shadow: 0 0 0 14px rgba(37, 211, 102, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
-  }
+/* ── WhatsApp Pulse ── transform/opacity ring instead of an animated box-shadow */
+.whatsapp-pulse::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(37, 211, 102, 0.6);
+  animation: whatsapp-ring 2s infinite ease-out;
+  pointer-events: none;
 }
 
-.whatsapp-pulse {
-  animation: whatsapp-pulse 2s infinite;
+@keyframes whatsapp-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
 }
 
 /* ── Navbar Active Link ── */
@@ -121,6 +176,70 @@ h1, h2, h3, h4, h5, h6 {
 
 .nav-link:hover::after {
   width: 100%;
+}
+
+/* ── Navbar shell ──
+   A top scrim keeps the white logo and hamburger legible when a near-white
+   project screenshot scrolls underneath the transparent bar. */
+.navbar-shell::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  /* Extends past the bar so the scrim fades out instead of ending in a hard
+     horizontal edge across a light-coloured project background. */
+  bottom: -56px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(10, 10, 11, 0.8), rgba(10, 10, 11, 0));
+  transition: opacity 0.4s ease;
+}
+
+/* Once the solid bar takes over, the scrim would only double the darkness */
+.navbar-shell--scrolled::before {
+  opacity: 0;
+}
+
+.navbar-shell--scrolled {
+  background: rgba(10, 10, 11, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ── Scroll cue ── */
+.scroll-cue__rail {
+  display: block;
+  position: relative;
+  width: 1px;
+  height: 44px;
+  overflow: hidden;
+  background: linear-gradient(to bottom, currentColor, transparent);
+}
+
+.scroll-cue__dot {
+  position: absolute;
+  top: 0;
+  left: -1px;
+  width: 3px;
+  height: 10px;
+  border-radius: 2px;
+  background: currentColor;
+  animation: scroll-cue-fall 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes scroll-cue-fall {
+  0% {
+    transform: translateY(-12px);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(44px);
+    opacity: 0;
+  }
 }
 
 /* ── Glass Effect ── */
@@ -373,10 +492,10 @@ h1, h2, h3, h4, h5, h6 {
   background: rgba(83, 163, 226, 0.02);
 }
 
-/* ── Letter span for hero animation ── */
+/* ── Letter span for hero animation ──
+   No permanent will-change: the promotion used to be left on for the session. */
 .letter-span {
   display: inline-block;
-  will-change: transform, opacity;
 }
 
 /* ── Gradient text helper ── */
@@ -449,6 +568,627 @@ h1, h2, h3, h4, h5, h6 {
   100% {
     clip-path: inset(10% 0 80% 0);
     transform: translate(1px, -2px);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   Shared editorial primitives
+   ══════════════════════════════════════════════════════════════════ */
+
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  color: rgba(245, 245, 240, 0.5);
+}
+
+.section-label::before {
+  content: '';
+  width: 40px;
+  height: 1px;
+  background: currentColor;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   Preloader
+   ══════════════════════════════════════════════════════════════════ */
+
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: #0a0a0b;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 clamp(1.5rem, 5vw, 5rem) clamp(2.5rem, 8vh, 5rem);
+}
+
+.preloader__inner {
+  width: 100%;
+  max-width: 1440px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.preloader__label {
+  font-size: clamp(2rem, 7vw, 5rem);
+  line-height: 1;
+  color: #f5f5f0;
+}
+
+.preloader__counter {
+  font-size: clamp(3rem, 12vw, 9rem);
+  font-weight: 800;
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+  color: #f5f5f0;
+  font-variant-numeric: tabular-nums;
+}
+
+.preloader__bar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: #f5f5f0;
+  transform-origin: left center;
+  transform: scaleX(0);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   Custom cursor
+   ══════════════════════════════════════════════════════════════════ */
+
+.has-custom-cursor,
+.has-custom-cursor a,
+.has-custom-cursor button {
+  cursor: none;
+}
+
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 250;
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform;
+}
+
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f5f5f0;
+}
+
+.cursor-ring {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(245, 245, 240, 0.55);
+  display: grid;
+  place-items: center;
+  backdrop-filter: invert(1) grayscale(1);
+  -webkit-backdrop-filter: invert(1) grayscale(1);
+}
+
+.cursor-ring__label {
+  font-size: 0.42rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #f5f5f0;
+  opacity: 0;
+  white-space: nowrap;
+  mix-blend-mode: difference;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   Hero
+   ══════════════════════════════════════════════════════════════════ */
+
+.hero-scene {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-scene__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* Pushed right so the cloud sits opposite the type instead of behind it */
+  transform: translateX(26%);
+  opacity: 0.95;
+}
+
+@media (max-width: 1023px) {
+  .hero-scene__canvas {
+    transform: translateX(0) translateY(-12%);
+    opacity: 0.4;
+  }
+}
+
+.hero-meta {
+  display: flex;
+  font-size: 0.78rem;
+  color: rgba(245, 245, 240, 0.75);
+}
+
+.hero-meta__item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  letter-spacing: 0.06em;
+}
+
+.hero-meta__item em {
+  font-style: normal;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: rgba(245, 245, 240, 0.45);
+}
+
+/* ── Lightbox ── */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease;
+}
+
+.lightbox.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.lightbox img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.lightbox__close {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  z-index: 10;
+  background: none;
+  border: 0;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.lightbox__close:hover {
+  color: #fff;
+  transform: scale(1.1);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   About
+   ══════════════════════════════════════════════════════════════════ */
+
+.about {
+  position: relative;
+  padding: clamp(5rem, 14vh, 10rem) 0;
+}
+
+.about__inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 clamp(1.5rem, 5vw, 4rem);
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: clamp(2rem, 6vw, 6rem);
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .about__inner {
+    grid-template-columns: 1fr;
+  }
+  .about__col--media {
+    order: -1;
+    max-width: 380px;
+  }
+}
+
+.about__col--text {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.about__heading {
+  font-size: clamp(2.4rem, 6.5vw, 5.2rem);
+  font-weight: 800;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  color: #f5f5f0;
+}
+
+.about__heading em {
+  font-style: italic;
+  color: rgba(245, 245, 240, 0.45);
+}
+
+.about__bio {
+  font-size: clamp(1rem, 1.4vw, 1.2rem);
+  line-height: 1.75;
+  color: rgba(245, 245, 240, 0.72);
+  max-width: 46ch;
+}
+
+.about-meta {
+  width: 100%;
+  display: grid;
+  gap: 0;
+  border-top: 1px solid rgba(245, 245, 240, 0.12);
+}
+
+.about-meta__row {
+  display: grid;
+  grid-template-columns: 10rem 1fr;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(245, 245, 240, 0.12);
+  font-size: 0.82rem;
+}
+
+@media (max-width: 600px) {
+  .about-meta__row {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+  }
+}
+
+.about-meta__row dt {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.62rem;
+  color: rgba(245, 245, 240, 0.42);
+  padding-top: 0.2rem;
+}
+
+.about-meta__row dd {
+  color: rgba(245, 245, 240, 0.88);
+}
+
+.about-meta__row dd a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(245, 245, 240, 0.3);
+  transition: border-color 0.3s ease;
+}
+
+.about-meta__row dd a:hover {
+  border-color: #f5f5f0;
+}
+
+/* The portrait is a transparent cut-out, not a full-bleed photo — it gets a
+   glow to sit on, never a cropped frame. */
+.about__photo {
+  position: relative;
+  display: grid;
+  place-items: end center;
+  border-radius: 20px;
+}
+
+/* Sombreado circular pronunciado (viñeta) */
+.about__photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  /* Sombra circular que oscurece todo fuera del centro */
+  background: radial-gradient(circle at center, transparent 40%, rgba(0, 0, 0, 0.95) 75%);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.about__photo::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  width: 115%;
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(83, 163, 226, 0.16) 0%,
+    rgba(212, 166, 54, 0.07) 42%,
+    transparent 68%
+  );
+  pointer-events: none;
+}
+
+.about__photo img {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-height: 78vh;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 20px;
+  will-change: transform;
+  
+  /* Máscara en forma de CÍRCULO para difuminar la imagen y seguir el sombreado */
+  -webkit-mask-image: radial-gradient(circle at center, black 45%, transparent 75%);
+  mask-image: radial-gradient(circle at center, black 45%, transparent 75%);
+
+  /* Quitamos el mix-blend-mode que saturaba colores, dejamos el sombreado hacer su trabajo */
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   Process
+   ══════════════════════════════════════════════════════════════════ */
+
+.process {
+  position: relative;
+  padding: clamp(5rem, 14vh, 10rem) 0;
+}
+
+.process__inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 clamp(1.5rem, 5vw, 4rem);
+  display: grid;
+  grid-template-columns: 0.75fr 1.25fr;
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .process__inner {
+    grid-template-columns: 1fr;
+  }
+}
+
+.process__head {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  align-items: flex-start;
+}
+
+/* Heading holds position while the steps scroll past it */
+@media (min-width: 901px) {
+  .process__head {
+    position: sticky;
+    top: 22vh;
+  }
+}
+
+@media (max-width: 900px) {
+  .process__head {
+    margin-bottom: clamp(2.5rem, 7vw, 4rem);
+  }
+}
+
+.process__heading {
+  font-size: clamp(2.2rem, 6vw, 4.5rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  color: #f5f5f0;
+}
+
+.process__body {
+  position: relative;
+  padding-left: clamp(2.5rem, 6vw, 5rem);
+}
+
+.process__rail {
+  position: absolute;
+  left: 0;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    rgba(245, 245, 240, 0.5),
+    rgba(245, 245, 240, 0.08)
+  );
+  transform-origin: top center;
+}
+
+.process__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.process-step {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+  align-items: start;
+}
+
+.process-step__num {
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  color: rgba(245, 245, 240, 0.45);
+  font-variant-numeric: tabular-nums;
+  padding-top: 0.6rem;
+  min-width: 2.4ch;
+}
+
+.process-step__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  align-items: flex-start;
+}
+
+.process-step__title {
+  font-size: clamp(1.5rem, 3.6vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  color: #f5f5f0;
+}
+
+.process-step__line {
+  width: clamp(3rem, 8vw, 6rem);
+  height: 1px;
+  background: rgba(245, 245, 240, 0.3);
+  transform-origin: left center;
+}
+
+.process-step__desc {
+  font-size: clamp(0.92rem, 1.2vw, 1.05rem);
+  line-height: 1.7;
+  color: rgba(245, 245, 240, 0.62);
+  max-width: 52ch;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   Contact
+   ══════════════════════════════════════════════════════════════════ */
+
+.contact {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: clamp(5rem, 12vh, 9rem) 0;
+  overflow: hidden;
+}
+
+.contact__inner {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 clamp(1.5rem, 5vw, 4rem);
+}
+
+.contact__heading {
+  font-weight: 800;
+  font-size: clamp(2.6rem, 8.5vw, 7.5rem);
+  line-height: 0.9;
+  letter-spacing: -0.045em;
+  color: #f5f5f0;
+  margin-bottom: clamp(2.5rem, 7vw, 5rem);
+}
+
+.contact__line {
+  display: block;
+  overflow: hidden;
+}
+
+.contact__line--muted {
+  color: rgba(245, 245, 240, 0.4);
+  padding-left: clamp(0rem, 8vw, 8rem);
+}
+
+.contact__grid {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .contact__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.contact__aside {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.contact__subtext {
+  font-size: clamp(0.95rem, 1.3vw, 1.15rem);
+  line-height: 1.75;
+  color: rgba(245, 245, 240, 0.6);
+  max-width: 42ch;
+}
+
+.contact__direct {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.contact__direct a {
+  font-size: clamp(1rem, 1.8vw, 1.5rem);
+  color: #f5f5f0;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(245, 245, 240, 0.25);
+  transition: border-color 0.35s ease, color 0.35s ease;
+}
+
+.contact__direct a:hover {
+  border-color: #f5f5f0;
+}
+
+.contact__form {
+  border-radius: 18px;
+  padding: clamp(1.5rem, 3.5vw, 2.75rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  text-align: left;
+}
+
+/* ── Reduced motion ──
+   GSAP animations are gated separately via gsap.matchMedia(); this covers the
+   purely-CSS motion: infinite loops, long transitions and the glitch layers. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .whatsapp-pulse::after,
+  .scroll-cue__dot,
+  .glitch-text::before,
+  .glitch-text::after,
+  .cursor-dot,
+  .cursor-ring,
+  .preloader {
+    display: none !important;
+  }
+
+  .project-image-frame:hover img,
+  .project-visit-btn:hover,
+  .project-showcase-btn:hover:not(:disabled),
+  .meaculpa-feature-card:hover,
+  .novasite-feature-card:hover {
+    transform: none;
   }
 }
 
