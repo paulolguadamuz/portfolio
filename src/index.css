@@ -900,8 +900,8 @@ h1, h2, h3, h4, h5, h6 {
   content: '';
   position: absolute;
   inset: 0;
-  /* Sombra circular que oscurece todo fuera del centro */
-  background: radial-gradient(circle at center, transparent 40%, rgba(0, 0, 0, 0.95) 75%);
+  /* Sombra circular que oscurece todo fuera del centro, usando el color de fondo exacto (#0A0A0B) */
+  background: radial-gradient(circle at center, transparent 40%, rgba(10, 10, 11, 1) 75%);
   pointer-events: none;
   z-index: 5;
 }
@@ -932,7 +932,7 @@ h1, h2, h3, h4, h5, h6 {
   object-fit: cover;
   object-position: center;
   border-radius: 20px;
-  will-change: transform;
+  /* ponytail: will-change removed — GSAP promotes during parallax scrub only */
   
   /* Máscara en forma de CÍRCULO para difuminar la imagen y seguir el sombreado */
   -webkit-mask-image: radial-gradient(circle at center, black 45%, transparent 75%);
@@ -1158,6 +1158,16 @@ h1, h2, h3, h4, h5, h6 {
   flex-direction: column;
   gap: 1.5rem;
   text-align: left;
+}
+
+/* ── Below-fold sections: skip layout and paint until scrolled near ── */
+#projects,
+#about,
+#process,
+#skills,
+#contact {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 800px;
 }
 
 /* ── Reduced motion ──
