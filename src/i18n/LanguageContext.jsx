@@ -4,7 +4,7 @@ import translations from './translations';
 const LanguageContext = createContext();
 
 export function LanguageProvider({ children }) {
-  const [lang, setLang] = useState('en');
+  const [lang, setLang] = useState('es');
 
   // Keep <html lang> in sync so screen readers use the right pronunciation
   useEffect(() => {

@@ -13,15 +13,15 @@ const translations = {
 
     // Hero
     hero: {
-      subtitle: 'Ingeniero TI , Desarrollador Web, UI/UX Designer.',
-      bio: 'Soy un ingeniero en tecnologías de información con experiencia en desarrollo web, diseño de interfaces, ciberseguridad y soluciones tecnológicas. Me especializo en crear soluciones eficientes y escalables para empresas y organizaciones.',
+      subtitle: 'Ingeniero TI y Desarrollador.',
+      bio: 'Soy un ingeniero en tecnologías de información con experiencia en desarrollo de software, ciberseguridad y soluciones tecnológicas. Me especializo en crear soluciones eficientes y escalables para empresas y organizaciones.',
       cta_projects: 'Ver proyectos',
       cta_contact: 'Contacto',
       scroll_cue: 'Desliza',
       meta_based: 'Ubicación',
       meta_projects: 'Proyectos',
       meta_focus: 'Enfoque',
-      meta_focus_value: 'Web · UI/UX · Backend',
+      meta_focus_value: 'Software · TI · Backend',
     },
 
     // Work (índice de proyectos)
@@ -35,11 +35,10 @@ const translations = {
     // Sobre mí
     about: {
       label: 'Sobre mí',
-      heading_1: 'Construyo',
-      heading_2: 'productos que',
-      heading_3: 'se usan.',
+      heading_1: '¿Quién',
+      heading_2: 'soy?',
       meta_role: 'Rol',
-      meta_role_value: 'Ingeniero TI · Desarrollador Web · UI/UX',
+      meta_role_value: 'Ingeniero TI y Desarrollador',
       meta_location: 'Ubicación',
       meta_location_value: 'Costa Rica',
       meta_email: 'Email',
@@ -74,9 +73,9 @@ const translations = {
         4: 'Plataforma online del Juego de mesa estilo Calabozos y Dragones (D&D), con perfiles de personaje, inventario interactivo, compendio de conjuros, comercio en tiempo real, gremios y pasarela de pagos PayPal. Construida con Next.js, TypeScript, Supabase (PostgreSQL + RLS) y Tailwind CSS.',
       },
       tags: {
-        'Catálogo': 'Catálogo',
-        'Mantenimiento': 'Mantenimiento',
         'Automatización': 'Automatización',
+        'E-commerce': 'E-commerce',
+        'SaaS': 'SaaS',
       },
       visit_site: 'Visitar sitio',
       private_saas: 'SaaS Privado — Acceso Restringido',
@@ -281,15 +280,15 @@ const translations = {
 
     // Hero
     hero: {
-      subtitle: 'IT Engineer, Web Developer, UI/UX Designer.',
-      bio: 'I am an information technology engineer with experience in web development, interface design, cybersecurity and technology solutions. I specialize in creating efficient and scalable solutions for companies and organizations.',
+      subtitle: 'IT Engineer & Developer.',
+      bio: 'I am an information technology engineer with experience in software development, cybersecurity and technology solutions. I specialize in creating efficient and scalable solutions for companies and organizations.',
       cta_projects: 'View projects',
       cta_contact: 'Contact',
       scroll_cue: 'Scroll',
       meta_based: 'Based in',
       meta_projects: 'Projects',
       meta_focus: 'Focus',
-      meta_focus_value: 'Web · UI/UX · Backend',
+      meta_focus_value: 'Software · IT · Backend',
     },
 
     // Work (project index)
@@ -303,16 +302,15 @@ const translations = {
     // About
     about: {
       label: 'About',
-      heading_1: 'I love building',
-      heading_2: 'efficient',
-      heading_3: 'products.',
+      heading_1: 'Who',
+      heading_2: 'I am.',
       meta_role: 'Role',
-      meta_role_value: 'IT Engineer · Web Developer · UI/UX',
+      meta_role_value: 'IT Engineer & Developer',
       meta_location: 'Based in',
       meta_location_value: 'Costa Rica',
       meta_email: 'Email',
       meta_stack: 'Core stack',
-      meta_stack_value: '.NET · React · Next.js · TypeScript · C# · PHP · PostgreSQL',
+      meta_stack_value: '.NET · React · Next.js · TypeScript · PostgreSQL',
       photo_alt: 'Portrait of Paulo Jimenez Guadamuz',
     },
 
@@ -343,9 +341,9 @@ const translations = {
         4: 'Online platform for the Dungeons & Dragons-style board game, featuring character profiles, interactive inventory, spell compendium, real-time trading, guilds, and PayPal payment gateway. Built with Next.js, TypeScript, Supabase (PostgreSQL + RLS) and Tailwind CSS.',
       },
       tags: {
-        'Catálogo': 'Catalog',
-        'Mantenimiento': 'Maintenance',
         'Automatización': 'Automation',
+        'E-commerce': 'E-commerce',
+        'SaaS': 'SaaS',
       },
       visit_site: 'Visit site',
       private_saas: 'Private SaaS — Restricted Access',
