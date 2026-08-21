@@ -10,7 +10,7 @@ export const projects = [
       "/projects/NovasiteMembers.webp",
       "/projects/NovasiteContact.webp",
     ],
-    tags: ["Next.js", "TypeScript", "Tailwind CSS", "GSAP"],
+    tags: ["Next.js", "TypeScript", "Tailwind CSS"],
     url: "https://www.novacr.site",
     palette: {
       from: "#09090A",
@@ -29,7 +29,7 @@ export const projects = [
       "/projects/BougainVilleaCatalog.webp",
       "/projects/BougainVilleaContactBurgerMenu.webp",
     ],
-    tags: ["E-commerce", "PayPal", "SINPE", "Catálogo"],
+    tags: ["React", "E-commerce"],
     url: "https://bougan-villea.vercel.app/",
     palette: {
       from: "#4E0D33",
@@ -49,7 +49,7 @@ export const projects = [
       "/projects/mantentoolsUsers.webp",
       "/projects/MantentoolsCheck.webp",
     ],
-    tags: ["QR", "Mantenimiento", "Industrial", "Automatización"],
+    tags: ["SaaS", "Automatización"],
     isPrivate: true,
     palette: {
       from: "#162033",
@@ -68,7 +68,7 @@ export const projects = [
       "/projects/PersonajeMeaCulpa.webp",
       "/projects/ConjurosMeaCulpa.webp",
     ],
-    tags: ["Next.js", "TypeScript", "Supabase", "PayPal"],
+    tags: ["Next.js", "TypeScript", "Supabase"],
     url: "https://www.meaculpadnd.com",
     palette: {
       from: "#1A1108",

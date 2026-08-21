@@ -74,7 +74,6 @@ export default function Process() {
     <section id="process" ref={sectionRef} className="process">
       <div className="process__inner">
         <header className="process__head">
-          <span className="section-label font-body">{t('process.label')}</span>
           <h2 className="process__heading font-display">{t('process.heading')}</h2>
         </header>
 

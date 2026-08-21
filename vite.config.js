@@ -7,4 +7,15 @@ export default defineConfig({
     port: 5173,
     open: true,
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          three: ['three'],
+          gsap: ['gsap', 'gsap/ScrollTrigger', 'gsap/SplitText', 'gsap/Flip', 'gsap/Observer', 'gsap/ScrambleTextPlugin'],
+        },
+      },
+    },
+  },
 });
+

@@ -301,8 +301,7 @@ export default function Projects() {
 
       {/* Section heading */}
       <div ref={headingRef} className="max-w-7xl mx-auto px-6 lg:px-8 mb-20">
-        <span className="section-label font-body">{t('projects.label')}</span>
-        <h2 className="mt-5 font-display font-bold text-4xl sm:text-5xl md:text-6xl text-light tracking-tight">
+        <h2 className="font-display font-bold text-4xl sm:text-5xl md:text-6xl text-light tracking-tight">
           {t('projects.title')}
         </h2>
         <div className="mt-4 w-24 h-1 bg-light/20 rounded-full" />

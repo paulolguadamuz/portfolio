@@ -107,12 +107,9 @@ export default function About() {
     <section id="about" ref={sectionRef} className="about">
       <div className="about__inner">
         <div className="about__col about__col--text">
-          <span className="section-label font-body">{t('about.label')}</span>
-
           <h2 ref={headingRef} className="about__heading font-display">
             {t('about.heading_1')} <br />
-            {t('about.heading_2')} <br />
-            <em>{t('about.heading_3')}</em>
+            <em>{t('about.heading_2')}</em>
           </h2>
 
           <p ref={bioRef} className="about__bio font-body">
