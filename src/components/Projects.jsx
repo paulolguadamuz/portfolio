@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState, useCallback, lazy, Suspense } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { FiGithub, FiX } from 'react-icons/fi';
+import { FiGithub } from 'react-icons/fi';
 import { projects } from '../data/projects';
 import ProjectCard from './ProjectCard';
+import ProjectLightboxModal from './ProjectLightboxModal';
 import { useLang } from '../i18n/LanguageContext';
 import { FULL_MOTION, scrollToSection, prefersReducedMotion } from '../lib/motion';
 
@@ -23,7 +24,7 @@ export default function Projects() {
   const headingRef = useRef(null);
   const ctaRef = useRef(null);
 
-  const [activeImage, setActiveImage] = useState(null);
+  const [lightbox, setLightbox] = useState({ isOpen: false, project: null, initialIndex: 0 });
   const [showcaseOpen, setShowcaseOpen] = useState(null);
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -34,10 +35,6 @@ export default function Projects() {
   // One fixed, GPU-composited layer per palette change. Fading opacity replaces
   // rewriting a full-viewport gradient on <body> every scroll frame.
   const bgLayerRefs = useRef([]);
-
-  const lightboxRef = useRef(null);
-  const lightboxCloseRef = useRef(null);
-  const lastFocusedRef = useRef(null);
 
   /* ── Warm the case-study chunks once the page is idle ── */
   useEffect(() => {
@@ -237,44 +234,23 @@ export default function Projects() {
     [isAnimating, showcaseOpen, instantClose, lockBackgroundTo]
   );
 
+  const handleOpenLightbox = useCallback((project, initialIndex = 0) => {
+    setLightbox({ isOpen: true, project, initialIndex });
+  }, []);
+
+  const handleCloseLightbox = useCallback(() => {
+    setLightbox((prev) => ({ ...prev, isOpen: false }));
+  }, []);
+
   /* ── Escape closes the open case study ── */
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key !== 'Escape' || activeImage) return;
+      if (e.key !== 'Escape' || lightbox.isOpen) return;
       if (showcaseOpen !== null && !isAnimating) handleCloseShowcase();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [showcaseOpen, isAnimating, activeImage, handleCloseShowcase]);
-
-  /* ── Lightbox: modal semantics, focus trap, focus restore ── */
-  useEffect(() => {
-    if (!activeImage) return;
-    lastFocusedRef.current = document.activeElement;
-    lightboxCloseRef.current?.focus();
-
-    const onKey = (e) => {
-      if (e.key === 'Escape') return setActiveImage(null);
-      if (e.key !== 'Tab') return;
-      const f = lightboxRef.current?.querySelectorAll('button, [href]');
-      if (!f?.length) return;
-      const first = f[0];
-      const last = f[f.length - 1];
-      if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    };
-
-    window.addEventListener('keydown', onKey);
-    return () => {
-      window.removeEventListener('keydown', onKey);
-      lastFocusedRef.current?.focus?.();
-    };
-  }, [activeImage]);
+  }, [showcaseOpen, isAnimating, lightbox.isOpen, handleCloseShowcase]);
 
   return (
     <section id="projects" ref={wrapperRef} className="relative py-24">
@@ -317,7 +293,7 @@ export default function Projects() {
                 <ProjectCard
                   project={project}
                   index={index}
-                  onImageClick={setActiveImage}
+                  onImageClick={handleOpenLightbox}
                   onShowcase={hasShowcase ? () => handleOpenShowcase(project.id) : undefined}
                   showcaseOpen={showcaseOpen === project.id}
                 />
@@ -383,29 +359,13 @@ export default function Projects() {
         </a>
       </div>
 
-      {/* Lightbox */}
-      <div
-        ref={lightboxRef}
-        role="dialog"
-        aria-modal="true"
-        aria-label={t('projects.view')}
-        className={`lightbox ${activeImage ? 'is-open' : ''}`}
-        onClick={() => setActiveImage(null)}
-      >
-        <button
-          type="button"
-          ref={lightboxCloseRef}
-          className="lightbox__close"
-          onClick={() => setActiveImage(null)}
-          aria-label={t('projects.close')}
-          tabIndex={activeImage ? 0 : -1}
-        >
-          <FiX className="w-8 h-8" />
-        </button>
-        {activeImage && (
-          <img src={activeImage} alt={t('projects.view')} onClick={(e) => e.stopPropagation()} />
-        )}
-      </div>
+      {/* Project Lightbox Modal */}
+      <ProjectLightboxModal
+        isOpen={lightbox.isOpen}
+        project={lightbox.project}
+        initialIndex={lightbox.initialIndex}
+        onClose={handleCloseLightbox}
+      />
     </section>
   );
 }
