@@ -657,7 +657,7 @@ h1, h2, h3, h4, h5, h6 {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 250;
+  z-index: 1000000;
   pointer-events: none;
   opacity: 0;
   will-change: transform;
@@ -739,49 +739,194 @@ h1, h2, h3, h4, h5, h6 {
   color: rgba(245, 245, 240, 0.45);
 }
 
-/* ── Lightbox ── */
-.lightbox {
+/* ── Lightbox Modal ── */
+.project-lightbox-overlay {
   position: fixed;
   inset: 0;
-  z-index: 200;
+  z-index: 99999;
   display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(6, 6, 9, 0.92);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.45s ease;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 0.5rem 0.5rem 1.25rem 0.5rem;
+  user-select: none;
 }
 
-.lightbox.is-open {
+.project-lightbox-overlay.is-visible {
   opacity: 1;
   pointer-events: auto;
 }
 
-.lightbox img {
-  max-width: 90vw;
-  max-height: 90vh;
-  object-fit: contain;
-  border-radius: 8px;
+.project-lightbox__header {
+  width: 100%;
+  max-width: 1440px;
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 20;
 }
 
-.lightbox__close {
-  position: absolute;
-  top: 2rem;
-  right: 2rem;
-  z-index: 10;
-  background: none;
-  border: 0;
-  color: rgba(255, 255, 255, 0.7);
+.project-lightbox__btn-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.85);
   cursor: pointer;
-  transition: color 0.3s ease, transform 0.3s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.lightbox__close:hover {
+.project-lightbox__btn-close:hover {
+  background: rgba(255, 255, 255, 0.2);
   color: #fff;
-  transform: scale(1.1);
+  transform: scale(1.08);
+}
+
+.project-lightbox__btn-close:active {
+  transform: scale(0.94);
+}
+
+.project-lightbox__stage {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  max-width: 1440px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1rem;
+  min-height: 0;
+}
+
+.project-lightbox__image-wrapper {
+  position: relative;
+  max-width: 90vw;
+  max-height: 72vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.project-lightbox__img {
+  max-width: 100%;
+  max-height: 72vh;
+  object-fit: contain;
+  border-radius: 12px;
+  transform: scale(0.94);
+  opacity: 0;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+}
+
+.project-lightbox-overlay.is-visible .project-lightbox__img {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.project-lightbox__img.is-changing {
+  opacity: 0.4;
+  transform: scale(0.97);
+}
+
+.project-lightbox__nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 9999px;
+  background: rgba(18, 18, 24, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.project-lightbox__nav-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.project-lightbox__nav-btn:active {
+  transform: translateY(-50%) scale(0.94);
+}
+
+.project-lightbox__nav-btn--prev {
+  left: 0.75rem;
+}
+
+.project-lightbox__nav-btn--next {
+  right: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .project-lightbox__nav-btn--prev {
+    left: 2rem;
+  }
+  .project-lightbox__nav-btn--next {
+    right: 2rem;
+  }
+  .project-lightbox__image-wrapper {
+    max-height: 76vh;
+  }
+  .project-lightbox__img {
+    max-height: 76vh;
+  }
+}
+
+.project-lightbox__thumbnails {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem 1rem 0;
+  z-index: 20;
+}
+
+.project-lightbox__thumb-btn {
+  position: relative;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  overflow: hidden;
+  opacity: 0.55;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  flex-shrink: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.project-lightbox__thumb-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.project-lightbox__thumb-btn.is-active {
+  opacity: 1;
+  transform: scale(1.06);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* ══════════════════════════════════════════════════════════════════

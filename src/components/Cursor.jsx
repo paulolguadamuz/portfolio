@@ -53,7 +53,11 @@ export default function Cursor() {
             label.textContent = target.dataset.cursorLabel || 'View';
           }
           gsap.to(label, { opacity: 1, duration: 0.25 });
-        } else if (state === 'link') {
+        } else if (state === 'close') {
+          gsap.to(ring, { scale: 1.8, duration: 0.35, ease: 'power3.out' });
+          gsap.to(dot, { scale: 0.4, duration: 0.25 });
+          gsap.to(label, { opacity: 0, duration: 0.2 });
+        } else if (state === 'link' || state === 'arrow-left' || state === 'arrow-right') {
           gsap.to(ring, { scale: 1.7, duration: 0.35, ease: 'power3.out' });
           gsap.to(dot, { scale: 0.4, duration: 0.25 });
           gsap.to(label, { opacity: 0, duration: 0.2 });

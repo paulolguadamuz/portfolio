@@ -179,7 +179,7 @@ export default function ProjectCard({ project, index, onImageClick, onShowcase, 
               decoding="async"
               data-cursor="view"
               data-cursor-label={t('projects.view')}
-              onClick={() => onImageClick(project.image)}
+              onClick={() => onImageClick(project, 0)}
             />
           </div>
 
@@ -206,7 +206,7 @@ export default function ProjectCard({ project, index, onImageClick, onShowcase, 
                     decoding="async"
                     data-cursor="view"
                     data-cursor-label={t('projects.view')}
-                    onClick={() => onImageClick(img)}
+                    onClick={() => onImageClick(project, i + 1)}
                   />
                 </div>
               ))}

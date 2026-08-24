@@ -81,6 +81,9 @@ const translations = {
       private_saas: 'SaaS Privado — Acceso Restringido',
       case_study: 'Ver caso de estudio',
       case_study_active: 'Caso abierto',
+      prev_image: 'Imagen anterior',
+      next_image: 'Siguiente imagen',
+      image_of: 'de',
     },
 
     // Contact
@@ -349,6 +352,9 @@ const translations = {
       private_saas: 'Private SaaS — Restricted Access',
       case_study: 'View case study',
       case_study_active: 'Case open',
+      prev_image: 'Previous image',
+      next_image: 'Next image',
+      image_of: 'of',
     },
 
     // Contact
