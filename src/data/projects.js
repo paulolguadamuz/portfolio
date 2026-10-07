@@ -1,5 +1,27 @@
 export const projects = [
   {
+    id: 5,
+    title: "Apse Promotor",
+    description:
+      "Aplicación para promotores de APSE que registra viajes, viáticos y actividades diarias, y genera informes de liquidación en PDF. Incluye rutas calculadas en mapa, control de acceso y revisión administrativa.",
+    image: "/projects/ApsePromotorNuevoViajePC.webp",
+    gallery: [
+      "/projects/Apse Promotor HistorialViajes.webp",
+      "/projects/ApsePromotorNuevoVIajeIphone.webp",
+      "/projects/ApsePromotorInformeIphone.webp",
+    ],
+    devicePreviews: {
+      desktop: ["/projects/ApsePromotorNuevoViajePC.webp", "/projects/Apse Promotor HistorialViajes.webp"],
+      mobile: ["/projects/ApsePromotorNuevoVIajeIphone.webp", "/projects/ApsePromotorInformeIphone.webp"],
+    },
+    palette: {
+      from: "#082D35",
+      to: "#0F5361",
+      accent: "#8CE0D5",
+      surface: "#F3FCF9",
+    },
+  },
+  {
     id: 1,
     title: "Novasite",
     description:

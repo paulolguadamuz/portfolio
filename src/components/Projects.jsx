@@ -5,6 +5,7 @@ import { FiGithub } from 'react-icons/fi';
 import { projects } from '../data/projects';
 import ProjectCard from './ProjectCard';
 import ProjectLightboxModal from './ProjectLightboxModal';
+import ApseShowcase from './ApseShowcase';
 import { useLang } from '../i18n/LanguageContext';
 import { FULL_MOTION, scrollToSection, prefersReducedMotion } from '../lib/motion';
 
@@ -15,7 +16,7 @@ const importNovaSite = () => import('./NovaSiteShowcase');
 const MeaCulpaShowcase = lazy(importMeaCulpa);
 const NovaSiteShowcase = lazy(importNovaSite);
 
-const SHOWCASE_IDS = [1, 4];
+const SHOWCASE_IDS = [1, 4, 5];
 const gradient = (p) => `linear-gradient(135deg, ${p.from}, ${p.to})`;
 
 export default function Projects() {
@@ -320,7 +321,9 @@ export default function Projects() {
                   <div className="showcase-inner">
                     {showcaseOpen === project.id && (
                       <Suspense fallback={null}>
-                        {project.id === 4 ? (
+                        {project.id === 5 ? (
+                          <ApseShowcase onClose={handleCloseShowcase} />
+                        ) : project.id === 4 ? (
                           <MeaCulpaShowcase
                             ref={(el) => {
                               showcaseContentRefs.current[project.id] = el;

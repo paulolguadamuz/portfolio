@@ -71,6 +71,7 @@ const translations = {
         2: 'E-commerce de café de especialidad con catálogo interactivo, carrito moderno y pasarelas de pago integradas (PayPal y SINPE). Incluye secciones de about, contacto y una experiencia de compra enfocada en transmitir la identidad artesanal de la marca.',
         3: 'Plataforma de gestión de mantenimiento industrial para pequeñas fábricas. Permite a los operarios reportar fallas escaneando un QR en cada máquina y genera recordatorios automáticos de revisiones preventivas, eliminando el caos de WhatsApp y minimizando paros en la línea de producción.',
         4: 'Plataforma online del Juego de mesa estilo Calabozos y Dragones (D&D), con perfiles de personaje, inventario interactivo, compendio de conjuros, comercio en tiempo real, gremios y pasarela de pagos PayPal. Construida con Next.js, TypeScript, Supabase (PostgreSQL + RLS) y Tailwind CSS.',
+        5: 'Aplicación para promotores de APSE que registra viajes, viáticos y actividades diarias, y genera informes de liquidación en PDF. Incluye rutas calculadas en mapa, control de acceso y revisión administrativa.',
       },
       tags: {
         'Automatización': 'Automatización',
@@ -78,12 +79,32 @@ const translations = {
         'SaaS': 'SaaS',
       },
       visit_site: 'Visitar sitio',
+      in_development: 'Proyecto en desarrollo',
       private_saas: 'SaaS Privado — Acceso Restringido',
       case_study: 'Ver caso de estudio',
       case_study_active: 'Caso abierto',
       prev_image: 'Imagen anterior',
       next_image: 'Siguiente imagen',
       image_of: 'de',
+      desktop_view: 'PC',
+      mobile_view: 'iPhone',
+      device_preview: 'Vista del proyecto',
+      trip_history: 'Historial de viajes',
+      report: 'Informe',
+    },
+
+    apse: {
+      label: 'Caso de estudio · APSE Promotor',
+      heading: 'Rutas, viáticos e informes en un solo lugar.',
+      intro: 'Una PWA para que los promotores registren su trabajo diario y preparen liquidaciones claras, con un panel administrativo para revisar la información del equipo.',
+      features: {
+        routes: { title: 'Viajes con mapa', desc: 'Cálculo de rutas por carretera, lugares recientes y validación de registros duplicados.' },
+        expenses: { title: 'Control de viáticos', desc: 'Registro de alimentación y hospedaje con límites diarios y confirmación de guardado.' },
+        reports: { title: 'Informes PDF', desc: 'Liquidaciones individuales y consolidadas para varios promotores, con detalle y firmas.' },
+        admin: { title: 'Administración', desc: 'Aprobación de cuentas, gestión de estados y auditoría de viajes y viáticos.' },
+      },
+      architecture_label: 'Cómo funciona',
+      architecture: 'Interfaz en JavaScript, HTML y CSS; Supabase gestiona la autenticación y los datos. IndexedDB conserva una caché de lectura y la aplicación confirma los cambios en línea antes de mostrarlos como guardados.',
     },
 
     // Contact
@@ -342,6 +363,7 @@ const translations = {
         2: 'Specialty coffee e-commerce with interactive catalog, modern cart and integrated payment gateways (PayPal & SINPE). Includes about, contact sections and a shopping experience focused on conveying the artisan brand identity.',
         3: 'Industrial maintenance management platform for small factories. Allows operators to report failures by scanning a QR code on each machine and generates automatic reminders for preventive reviews, eliminating WhatsApp chaos and minimizing production line stoppages.',
         4: 'Online platform for the Dungeons & Dragons-style board game, featuring character profiles, interactive inventory, spell compendium, real-time trading, guilds, and PayPal payment gateway. Built with Next.js, TypeScript, Supabase (PostgreSQL + RLS) and Tailwind CSS.',
+        5: 'App for APSE field representatives to record trips, travel expenses and daily activities, then generate PDF settlement reports. Includes map based routes, access control and administrative review.',
       },
       tags: {
         'Automatización': 'Automation',
@@ -349,12 +371,32 @@ const translations = {
         'SaaS': 'SaaS',
       },
       visit_site: 'Visit site',
+      in_development: 'Project in development',
       private_saas: 'Private SaaS — Restricted Access',
       case_study: 'View case study',
       case_study_active: 'Case open',
       prev_image: 'Previous image',
       next_image: 'Next image',
       image_of: 'of',
+      desktop_view: 'Desktop',
+      mobile_view: 'iPhone',
+      device_preview: 'Project preview',
+      trip_history: 'Trip history',
+      report: 'Report',
+    },
+
+    apse: {
+      label: 'Case study · APSE Promotor',
+      heading: 'Routes, expenses and reports in one place.',
+      intro: 'A PWA for field representatives to record daily work and prepare clear settlement reports, with an administration area for reviewing team activity.',
+      features: {
+        routes: { title: 'Map based trips', desc: 'Road route calculations, recent places and duplicate trip validation.' },
+        expenses: { title: 'Travel expenses', desc: 'Meal and lodging records with daily limits and confirmed saving.' },
+        reports: { title: 'PDF reports', desc: 'Individual and consolidated settlements for multiple representatives, with details and signatures.' },
+        admin: { title: 'Administration', desc: 'Account approval, status management and trip and expense auditing.' },
+      },
+      architecture_label: 'How it works',
+      architecture: 'The interface uses JavaScript, HTML and CSS. Supabase handles authentication and data. IndexedDB keeps a reading cache, and the app confirms online changes before showing them as saved.',
     },
 
     // Contact
