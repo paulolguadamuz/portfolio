@@ -6,7 +6,6 @@ import Lenis from 'lenis';
 import { LanguageProvider } from './i18n/LanguageContext';
 import { prefersReducedMotion, setLenis } from './lib/motion';
 import Preloader from './components/Preloader';
-import Cursor from './components/Cursor';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Projects from './components/Projects';
@@ -58,7 +57,6 @@ function App() {
   return (
     <LanguageProvider>
       <Preloader onDone={handleIntroDone} />
-      <Cursor />
 
       <a href="#main" className="skip-link">
         Skip to content

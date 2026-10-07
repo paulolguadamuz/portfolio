@@ -163,10 +163,6 @@ export default function ProjectLightboxModal({ isOpen, project, initialIndex = 0
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center gap-3">
-          <span
-            className="w-2.5 h-2.5 rounded-full"
-            style={{ backgroundColor: accentColor, boxShadow: `0 0 10px ${accentColor}` }}
-          />
           <span className="font-display font-semibold text-sm sm:text-base text-white tracking-wide">
             {project.title}
           </span>

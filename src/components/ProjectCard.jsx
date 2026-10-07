@@ -1,9 +1,11 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { SplitText } from 'gsap/SplitText';
-import { FiExternalLink, FiLock, FiBookOpen, FiChevronUp } from 'react-icons/fi';
+import { FiExternalLink } from 'react-icons/fi';
+import { LuBookOpen, LuChevronUp, LuWrench } from 'react-icons/lu';
 import { useLang } from '../i18n/LanguageContext';
 import { FULL_MOTION, FULL_MOTION_FINE, makeMagnetic } from '../lib/motion';
+import ApseDevicePreview from './ApseDevicePreview';
 
 export default function ProjectCard({ project, index, onImageClick, onShowcase, showcaseOpen }) {
   const { t } = useLang();
@@ -12,7 +14,6 @@ export default function ProjectCard({ project, index, onImageClick, onShowcase, 
   const galleryRef = useRef(null);
   const titleRef = useRef(null);
   const descRef = useRef(null);
-  const tagsRef = useRef(null);
   const actionRef = useRef(null);
 
   const isEven = index % 2 === 0;
@@ -94,22 +95,6 @@ export default function ProjectCard({ project, index, onImageClick, onShowcase, 
         }
       );
 
-      if (tagsRef.current?.children.length) {
-        gsap.fromTo(
-          tagsRef.current.children,
-          { opacity: 0, y: 20, scale: 0.9 },
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 0.8,
-            stagger: 0.05,
-            ease: 'expo.out',
-            scrollTrigger: { ...trigger, start: 'top 65%' },
-          }
-        );
-      }
-
       if (actionRef.current) {
         gsap.fromTo(
           actionRef.current,
@@ -153,64 +138,65 @@ export default function ProjectCard({ project, index, onImageClick, onShowcase, 
     };
   }, [isEven]);
 
-  const translateTag = (tag) => {
-    const translated = t(`projects.tags.${tag}`);
-    return translated === `projects.tags.${tag}` ? tag : translated;
-  };
-
   return (
     <div ref={cardRef} className="max-w-7xl mx-auto px-6 lg:px-8 w-full">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
         {/* Images column — swaps sides on desktop via order, not direction:rtl */}
         <div className={`flex flex-col gap-4 ${isEven ? '' : 'lg:order-2'}`}>
-          <div
-            ref={imageRef}
-            className="project-image-frame rounded-2xl overflow-hidden shadow-2xl"
-            style={{ boxShadow: `0 25px 60px -12px ${project.palette.accent}25` }}
-          >
-            <img
-              src={project.image}
-              alt={project.title}
-              width="1600"
-              height="900"
-              className="w-full h-auto aspect-video object-cover cursor-pointer"
-              loading={index === 0 ? 'eager' : 'lazy'}
-              fetchpriority={index === 0 ? 'high' : undefined}
-              decoding="async"
-              data-cursor="view"
-              data-cursor-label={t('projects.view')}
-              onClick={() => onImageClick(project, 0)}
-            />
-          </div>
+          {project.devicePreviews ? (
+            <ApseDevicePreview ref={imageRef} project={project} onImageClick={onImageClick} />
+          ) : (
+            <>
+              <div
+                ref={imageRef}
+                className="project-image-frame rounded-2xl overflow-hidden shadow-2xl"
+                style={{ boxShadow: `0 25px 60px -12px ${project.palette.accent}25` }}
+              >
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  width="1600"
+                  height="900"
+                  className="w-full h-auto aspect-video object-cover cursor-pointer"
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                  fetchpriority={index === 0 ? 'high' : undefined}
+                  decoding="async"
+                  data-cursor="view"
+                  data-cursor-label={t('projects.view')}
+                  onClick={() => onImageClick(project, 0)}
+                />
+              </div>
 
-          {project.gallery?.length > 0 && (
-            <div
-              ref={galleryRef}
-              className={`grid gap-3 ${
-                project.gallery.length === 2 ? 'grid-cols-2' : 'grid-cols-3'
-              }`}
-            >
-              {project.gallery.map((img, i) => (
+              {project.gallery?.length > 0 && (
                 <div
-                  key={img}
-                  className="project-image-frame rounded-lg overflow-hidden border border-white/10"
-                  style={{ boxShadow: `0 8px 24px -4px ${project.palette.accent}15` }}
+                  ref={galleryRef}
+                  className={`grid gap-3 ${
+                    project.gallery.length === 2 ? 'grid-cols-2' : 'grid-cols-3'
+                  }`}
                 >
-                  <img
-                    src={img}
-                    alt={`${project.title} - ${t('projects.view')} ${i + 2}`}
-                    width="1600"
-                    height="900"
-                    className="w-full h-auto aspect-video object-cover cursor-pointer"
-                    loading="lazy"
-                    decoding="async"
-                    data-cursor="view"
-                    data-cursor-label={t('projects.view')}
-                    onClick={() => onImageClick(project, i + 1)}
-                  />
+                  {project.gallery.map((img, i) => (
+                    <div
+                      key={img}
+                      className="project-image-frame rounded-lg overflow-hidden border border-white/10"
+                      style={{ boxShadow: `0 8px 24px -4px ${project.palette.accent}15` }}
+                    >
+                      <img
+                        src={img}
+                        alt={`${project.title} - ${t('projects.view')} ${i + 2}`}
+                        width="1600"
+                        height="900"
+                        className="w-full h-auto aspect-video object-cover cursor-pointer"
+                        loading="lazy"
+                        decoding="async"
+                        data-cursor="view"
+                        data-cursor-label={t('projects.view')}
+                        onClick={() => onImageClick(project, i + 1)}
+                      />
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              )}
+            </>
           )}
         </div>
 
@@ -218,11 +204,11 @@ export default function ProjectCard({ project, index, onImageClick, onShowcase, 
         <div className={`flex flex-col gap-5 ${isEven ? '' : 'lg:order-1'}`}>
           <span
             aria-hidden="true"
-            data-value={String(project.id).padStart(2, '0')}
+            data-value={String(index + 1).padStart(2, '0')}
             className="project-number font-display font-bold text-7xl lg:text-8xl opacity-30 leading-none"
             style={{ color: project.palette.accent }}
           >
-            {String(project.id).padStart(2, '0')}
+            {String(index + 1).padStart(2, '0')}
           </span>
 
           <h3
@@ -241,26 +227,24 @@ export default function ProjectCard({ project, index, onImageClick, onShowcase, 
             {description}
           </p>
 
-          <div ref={tagsRef} className="flex flex-wrap gap-x-5 gap-y-2 mt-4">
-            {project.tags.map((tag) => (
-              <span
-                key={tag}
-                className="flex items-center gap-2 font-body text-xs uppercase tracking-widest font-medium"
-                style={{ color: project.palette.surface }}
-              >
-                <span
-                  className="w-1.5 h-1.5 rounded-full"
-                  style={{
-                    backgroundColor: project.palette.accent,
-                    boxShadow: `0 0 8px ${project.palette.accent}`,
-                  }}
-                />
-                {translateTag(tag)}
-              </span>
-            ))}
-          </div>
-
           <div ref={actionRef} className="flex flex-wrap items-center gap-3 mt-6">
+            {project.devicePreviews && (
+              <button
+                type="button"
+                disabled
+                className="project-visit-btn"
+                style={{
+                  '--accent': project.palette.accent,
+                  '--surface': project.palette.surface,
+                }}
+              >
+                <span className="project-visit-btn__content">
+                  <LuWrench className="w-4 h-4" aria-hidden="true" />
+                  {t('projects.in_development')}
+                </span>
+              </button>
+            )}
+
             {project.url && (
               <a
                 href={project.url}
@@ -281,19 +265,6 @@ export default function ProjectCard({ project, index, onImageClick, onShowcase, 
               </a>
             )}
 
-            {project.isPrivate && (
-              <span
-                className="project-private-badge"
-                style={{
-                  '--accent': project.palette.accent,
-                  '--surface': project.palette.surface,
-                }}
-              >
-                <FiLock className="w-3.5 h-3.5" />
-                {t('projects.private_saas')}
-              </span>
-            )}
-
             {onShowcase && (
               <button
                 type="button"
@@ -311,12 +282,12 @@ export default function ProjectCard({ project, index, onImageClick, onShowcase, 
                 <span className="project-visit-btn__content">
                   {showcaseOpen ? (
                     <>
-                      <FiChevronUp className="w-4 h-4" />
+                      <LuChevronUp className="w-4 h-4" />
                       {t('projects.case_study_active')}
                     </>
                   ) : (
                     <>
-                      <FiBookOpen className="w-4 h-4" />
+                      <LuBookOpen className="w-4 h-4" />
                       {t('projects.case_study')}
                     </>
                   )}

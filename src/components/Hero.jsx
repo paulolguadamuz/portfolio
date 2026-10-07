@@ -2,6 +2,7 @@ import { useEffect, useRef, lazy, Suspense } from 'react';
 import gsap from 'gsap';
 import { SplitText } from 'gsap/SplitText';
 import { useLang } from '../i18n/LanguageContext';
+import { projects } from '../data/projects';
 import {
   FULL_MOTION,
   FULL_MOTION_FINE,
@@ -210,8 +211,8 @@ export default function Hero({ introDone }) {
             </span>
             <span className="hero-meta__item">
               <em>{t('hero.meta_projects')}</em>
-              <span className="scramble-target" data-scramble="04">
-                04
+              <span className="scramble-target" data-scramble={String(projects.length).padStart(2, '0')}>
+                {String(projects.length).padStart(2, '0')}
               </span>
             </span>
             <span className="hero-meta__item">
